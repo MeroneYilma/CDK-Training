@@ -14,7 +14,6 @@
     ],
     "sso_groups_permission_sets": {
         "AWS.All.Admin": "arn:aws:sso:::permissionSet/ssoins-72236c35d3a35c4d/ps-7b30f39e82e55ea1",
-        "AWS.All.Networking": "arn:aws:sso:::permissionSet/ssoins-72236c35d3a35c4d/ps-794fa0edd8a050f4",
         "AWS.ALL.RDS.Admin": "arn:aws:sso:::permissionSet/ssoins-72236c35d3a35c4d/ps-b694cf7b8600ebd8",
         "AWS.All.ReadOnly": "arn:aws:sso:::permissionSet/ssoins-72236c35d3a35c4d/ps-c77b444b0c50e97e",
         "AWS.IAM": "arn:aws:sso:::permissionSet/ssoins-72236c35d3a35c4d/ps-c77b444b0c50e97e",
@@ -23,7 +22,6 @@
     },
     "sso_groups_ids": {
         "AWS.All.Admin": "b438d458-90b1-705a-4430-c6915956332e",
-        "AWS.All.Networking": "046814c8-f0c1-70d5-105d-4fdb02c167a4",
         "AWS.ALL.RDS.Admin": "9458e498-e0b1-7000-954a-ef39b6bf600c",
         "AWS.All.ReadOnly": "44c8b438-70f1-707e-8823-c269490e9748",
         "AWS.IAM": "44784478-4041-7088-f7e7-77ab48e98f11",
