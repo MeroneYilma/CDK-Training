@@ -21,6 +21,9 @@ if filepath is None:
 # Ensure the filepath is a string
 filepath = str(filepath)
 
+# Print the file path for debugging
+print(f"File path: {filepath}")
+
 # Check if the path is a directory or a file
 if os.path.isfile(filepath):
     ssogroups_dir = os.path.dirname(filepath)
