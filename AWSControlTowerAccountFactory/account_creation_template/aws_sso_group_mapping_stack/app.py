@@ -18,27 +18,30 @@ filepath = app.node.try_get_context("filepath")
 if filepath is None:
     filepath = data_path / 'sso-groups'
 
-# Ensure the filepath is a string
-filepath = str(filepath)
+# Ensure the filepath is a Path object
+filepath = Path(filepath)
 
 # Print the file path for debugging
 print(f"File path: {filepath}")
 
 # Check if the path is a directory or a file
-if os.path.isfile(filepath):
-    ssogroups_dir = os.path.dirname(filepath)
+if filepath.is_file():
+    ssogroups_dir = filepath.parent
 else:
     ssogroups_dir = filepath
 
+# Print the directory path for debugging
+print(f"Directory path: {ssogroups_dir}")
+
 # Check if the directory exists
-if not os.path.exists(ssogroups_dir):
+if not ssogroups_dir.exists():
     raise FileNotFoundError(f"The directory {ssogroups_dir} does not exist.")
 
 def get_account_files(directory):
     """Get a list of JSON files in the specified directory."""
-    if not os.path.exists(directory):
+    if not directory.exists():
         return []
-    return [os.path.join(directory, f) for f in os.listdir(directory) if f.endswith('.json')]
+    return [f for f in directory.iterdir() if f.suffix == '.json']
 
 def sanitize_stack_name(name):
     """Sanitize the stack name to match the required pattern."""
@@ -77,17 +80,20 @@ def create_stacks(app, account_files, output_dir):
                 "sso_instance_arn": context["sso_instance_arn"]
             }
             new_json_filename = f"{sanitize_stack_name(account['AccountName'])}.json"
-            new_json_path = os.path.join(output_dir, new_json_filename)
+            new_json_path = output_dir / new_json_filename
             
             with open(new_json_path, 'w') as new_json_file:
                 json.dump(new_json_content, new_json_file, indent=4)
 
 # Define the output directory for the new JSON files
 output_dir = data_path / 'generated-sso-groups'
-os.makedirs(output_dir, exist_ok=True)
+output_dir.mkdir(parents=True, exist_ok=True)
 
 # Get the list of account files
 account_files = get_account_files(ssogroups_dir)
+
+# Print the list of account files for debugging
+print(f"Account files: {account_files}")
 
 # Create stacks for each account file and generate new JSON files if account files exist
 if account_files:
