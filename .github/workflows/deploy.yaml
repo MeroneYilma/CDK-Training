@@ -38,25 +38,30 @@ jobs:
           fi
 
       - name: Install dependencies
-        working-directory: aws_sso_group_mapping_stack
+        working-directory: account_creation_template/aws_sso_group_mapping_stack
         run: npm ci
 
       - name: Install AWS CDK
         run: npm install -g aws-cdk
 
       - name: Initialize CDK app
+        working-directory: account_creation_template/aws_sso_group_mapping_stack
         run: cdk init app --language python
 
       - name: Set up Python virtual environment
+        working-directory: account_creation_template/aws_sso_group_mapping_stack
         run: python -m venv .env
 
       - name: Activate virtual environment
+        working-directory: account_creation_template/aws_sso_group_mapping_stack
         run: source .env/bin/activate
 
       - name: Install Python dependencies
+        working-directory: account_creation_template/aws_sso_group_mapping_stack
         run: pip install -r requirements.txt
 
       - name: Install AWS CDK library
+        working-directory: account_creation_template/aws_sso_group_mapping_stack
         run: pip install aws-cdk-lib
 
       - name: Configure AWS credentials
