@@ -31,8 +31,12 @@ jobs:
           python-version: '3.8'
 
       - name: Ensure lock file exists in subdirectory
-        working-directory: account_creation_template/aws_sso_group_mapping_stack
         run: |
+          if [ ! -d account_creation_template/aws_sso_group_mapping_stack ]; then
+            echo "Directory account_creation_template/aws_sso_group_mapping_stack does not exist"
+            exit 1
+          fi
+          cd account_creation_template/aws_sso_group_mapping_stack
           if [ ! -f package-lock.json ] && [ ! -f yarn.lock ]; then
             npm install
           fi
