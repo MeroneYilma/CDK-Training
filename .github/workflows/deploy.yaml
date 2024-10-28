@@ -84,8 +84,8 @@ jobs:
 
       - name: Synth stack
         working-directory: AWSControlTowerAccountFactory/account_creation_template/aws_sso_group_mapping_stack
-        run: cdk synth
+        run: cdk synth -c filepath=C:\GithubWF\CDK-Training\CDK-Training\AWSControlTowerAccountFactory\data\sso-groups\Demo_Account11_sso.json
 
       - name: Deploy stack
         working-directory: AWSControlTowerAccountFactory/account_creation_template/aws_sso_group_mapping_stack
-        run: cdk deploy --all --require-approval never
+        run: cdk deploy AwsssoGroupMappingStack-Account-SSODemoAccount11 -c filepath=C:\GithubWF\CDK-Training\CDK-Training\AWSControlTowerAccountFactory\data\sso-groups\Demo_Account11_sso.json --require-approval never
