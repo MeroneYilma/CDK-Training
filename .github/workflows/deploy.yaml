@@ -13,12 +13,6 @@ jobs:
         with:
           fetch-depth: 2
 
-      - name: Ensure lock file exists
-        run: |
-          if [ ! -f package-lock.json ] && [ ! -f yarn.lock ]; then
-            npm install
-          fi
-
       - name: Setup Node.js environment
         uses: actions/setup-node@v2
         with:
@@ -29,9 +23,6 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: '3.8'
-
-      - name: Install root dependencies
-        run: npm ci
 
       - name: Ensure lock file exists in subdirectory
         working-directory: ./aws_sso_group_mapping_stack
