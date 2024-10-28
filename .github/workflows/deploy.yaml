@@ -81,11 +81,11 @@ jobs:
             echo "No JSON files found in AWSControlTowerAccountFactory/data/sso-groups"
             exit 1
           fi
+          # Print the contents of the directory for debugging
+          ls -l AWSControlTowerAccountFactory/data/sso-groups
 
       - name: Synth stack
         working-directory: AWSControlTowerAccountFactory/account_creation_template/aws_sso_group_mapping_stack
-        env:
-          CDK_CONTEXT_JSON: '{"filepath": "AWSControlTowerAccountFactory/data/sso-groups"}'
         run: cdk synth
 
       - name: Deploy stack
