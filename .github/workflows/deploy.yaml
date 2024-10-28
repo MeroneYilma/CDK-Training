@@ -45,8 +45,9 @@ jobs:
         working-directory: AWSControlTowerAccountFactory/account_creation_template/aws_sso_group_mapping_stack
         run: npm ci
 
-      - name: Install AWS CDK
-        run: npm install -g aws-cdk
+      - name: Install AWS CDK locally
+        working-directory: AWSControlTowerAccountFactory/account_creation_template/aws_sso_group_mapping_stack
+        run: npm install aws-cdk
 
       - name: Set up Python virtual environment
         working-directory: AWSControlTowerAccountFactory/account_creation_template/aws_sso_group_mapping_stack
@@ -86,8 +87,8 @@ jobs:
 
       - name: Synth stack
         working-directory: AWSControlTowerAccountFactory/account_creation_template/aws_sso_group_mapping_stack
-        run: cdk synth
+        run: npx cdk synth
 
       - name: Deploy stack
         working-directory: AWSControlTowerAccountFactory/account_creation_template/aws_sso_group_mapping_stack
-        run: cdk deploy AwsssoGroupMappingStack-Account-SSODemoAccount11 -c filepath="AWSControlTowerAccountFactory/data/sso-groups/Demo_Account11_sso.json" --require-approval never
+        run: npx cdk deploy AwsssoGroupMappingStack-Account-SSODemoAccount11 -c filepath="AWSControlTowerAccountFactory/data/sso-groups/Demo_Account11_sso.json" --require-approval never
