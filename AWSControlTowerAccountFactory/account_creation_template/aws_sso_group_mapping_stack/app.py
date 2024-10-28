@@ -6,7 +6,7 @@ from aws_cdk import App
 from aws_sso_group_mapping_stack import AwsSSOGroupMappingStack
 
 # Define the path to the data folder
-data_path = Path(__file__).parent.parent.parent.parent / 'AWSControlTowerAccountFactory/data'
+data_path = Path(__file__).resolve().parent.parent.parent.parent / 'AWSControlTowerAccountFactory/data'
 
 # Initialize the CDK app
 app = App()
@@ -19,7 +19,7 @@ if filepath is None:
     filepath = data_path / 'sso-groups'
 
 # Ensure the filepath is a Path object
-filepath = Path(filepath)
+filepath = Path(filepath).resolve()
 
 # Print the file path for debugging
 print(f"File path: {filepath}")
@@ -35,7 +35,7 @@ print(f"Directory path: {ssogroups_dir}")
 
 # Check if the directory exists
 if not ssogroups_dir.exists():
-    print(f"Resolved absolute path: {ssogroups_dir.resolve()}")
+    print(f"Resolved absolute path: {ssogroups_dir}")
     raise FileNotFoundError(f"The directory {ssogroups_dir} does not exist.")
 
 def get_account_files(directory):
