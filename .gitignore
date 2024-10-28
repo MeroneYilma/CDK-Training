@@ -1,0 +1,4 @@
+
+# Ignore Python virtual environment
+AWSControlTowerAccountFactory/account_creation_template/aws_sso_group_mapping_stack/.env/
+
