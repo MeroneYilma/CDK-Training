@@ -5,8 +5,9 @@ from pathlib import Path
 from aws_cdk import App
 from aws_sso_group_mapping_stack import AwsSSOGroupMappingStack
 
-# Define the path to the data folder
-data_path = Path(__file__).resolve().parent.parent.parent.parent / 'AWSControlTowerAccountFactory/data'
+# Define the path to the data folder relative to the repository root
+repo_root = Path(__file__).resolve().parent.parent.parent.parent
+data_path = repo_root / 'AWSControlTowerAccountFactory/data'
 
 # Initialize the CDK app
 app = App()
@@ -18,8 +19,8 @@ filepath = app.node.try_get_context("filepath")
 if filepath is None:
     filepath = data_path / 'sso-groups'
 
-# Ensure the filepath is a Path object
-filepath = Path(filepath).resolve()
+# Ensure the filepath is a Path object and resolve it relative to the repository root
+filepath = (repo_root / filepath).resolve()
 
 # Print the file path for debugging
 print(f"File path: {filepath}")
