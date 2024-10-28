@@ -71,6 +71,17 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: "us-east-1"
 
+      - name: Ensure sso-groups directory and JSON files exist
+        run: |
+          if [ ! -d AWSControlTowerAccountFactory/data/sso-groups ]; then
+            echo "Directory AWSControlTowerAccountFactory/data/sso-groups does not exist"
+            exit 1
+          fi
+          if [ -z "$(ls -A AWSControlTowerAccountFactory/data/sso-groups/*.json 2>/dev/null)" ]; then
+            echo "No JSON files found in AWSControlTowerAccountFactory/data/sso-groups"
+            exit 1
+          fi
+
       - name: Synth stack
         working-directory: AWSControlTowerAccountFactory/account_creation_template/aws_sso_group_mapping_stack
         run: cdk synth
