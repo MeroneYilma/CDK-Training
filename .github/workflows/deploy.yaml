@@ -25,11 +25,17 @@ jobs:
           python-version: '3.8'
 
       - name: Install root dependencies
-        run: npm ci
+        run: npm install
+
+      - name: Generate package-lock.json if not exists
+        run: |
+          if [ ! -f package-lock.json ]; then
+            npm install
+          fi
 
       - name: Install dependencies
         working-directory: ./aws_sso_group_mapping_stack
-        run: npm ci
+        run: npm install
 
       - name: Install AWS CDK
         run: npm install -g aws-cdk
