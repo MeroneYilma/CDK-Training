@@ -38,7 +38,7 @@ jobs:
           fi
 
       - name: Install dependencies
-        working-directory: ./aws_sso_group_mapping_stack
+        working-directory: aws_sso_group_mapping_stack
         run: npm ci
 
       - name: Install AWS CDK
@@ -67,7 +67,7 @@ jobs:
           aws-region: "us-east-1"
 
       - name: Synth stack
-        working-directory: ./account_creation_template/aws_sso_group_mapping_stack
+        working-directory: account_creation_template/aws_sso_group_mapping_stack
         run: cdk synth
 
       - name: Deploy stack
