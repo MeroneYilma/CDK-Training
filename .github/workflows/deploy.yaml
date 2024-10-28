@@ -13,12 +13,17 @@ jobs:
         with:
           fetch-depth: 2
 
+      - name: Ensure lock file exists
+        run: |
+          if [ ! -f package-lock.json ] && [ ! -f yarn.lock ]; then
+            echo "{}" > package.json
+            npm install
+          fi
+
       - name: Setup Node.js environment
         uses: actions/setup-node@v2
         with:
           node-version: 16
-          # Disable caching to avoid lock file requirement
-          cache: 'none'
 
       - name: Set up Python
         uses: actions/setup-python@v2
