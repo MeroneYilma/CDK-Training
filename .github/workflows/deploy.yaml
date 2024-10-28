@@ -31,7 +31,7 @@ jobs:
           python-version: '3.8'
 
       - name: Ensure lock file exists in subdirectory
-        working-directory: ./aws_sso_group_mapping_stack
+        working-directory: ./account_creation_template/aws_sso_group_mapping_stack
         run: |
           if [ ! -f package-lock.json ] && [ ! -f yarn.lock ]; then
             npm install
@@ -67,7 +67,7 @@ jobs:
           aws-region: "us-east-1"
 
       - name: Synth stack
-        working-directory: ./aws_sso_group_mapping_stack
+        working-directory: ./account_creation_template/aws_sso_group_mapping_stack
         run: cdk synth
 
       - name: Deploy stack
