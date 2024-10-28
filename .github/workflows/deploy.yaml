@@ -34,6 +34,12 @@ jobs:
       - name: Install AWS CDK
         run: npm install -g aws-cdk
 
+      - name: Install Python dependencies
+        run: pip install -r requirements.txt
+
+      - name: Activate virtual environment
+        run: source .env/bin/activate
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
