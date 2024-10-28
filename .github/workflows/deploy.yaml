@@ -19,28 +19,32 @@ jobs:
           node-version: 16
           cache: "npm"
 
-      - name: Install AWS CDK
-        run: npm install -g aws-cdk
-
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
           python-version: '3.8'
 
+      - name: Install root dependencies
+        run: npm ci
+
       - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
+        working-directory: ./aws_sso_group_mapping_stack
+        run: npm ci
+
+      - name: Install AWS CDK
+        run: npm install -g aws-cdk
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: "YOUR_AWS_REGION"
+          aws-region: "us-east-1"
 
       - name: Synth stack
+        working-directory: ./aws_sso_group_mapping_stack
         run: cdk synth
 
       - name: Deploy stack
+        working-directory: ./aws_sso_group_mapping_stack
         run: cdk deploy --all --require-approval never
