@@ -35,6 +35,7 @@ print(f"Directory path: {ssogroups_dir}")
 
 # Check if the directory exists
 if not ssogroups_dir.exists():
+    print(f"Resolved absolute path: {ssogroups_dir.resolve()}")
     raise FileNotFoundError(f"The directory {ssogroups_dir} does not exist.")
 
 def get_account_files(directory):
