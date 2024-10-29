@@ -34,4 +34,4 @@ jobs:
         AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
       run: |
         source .env/bin/activate
-        cdk deploy  ---app "python path/to/app.py" AWSControlTowerAccountFactoryStack-Demo-Account12 -c filepath=".github/data/accounts/Demo_Account12.json" --require-approval never 
+        cdk deploy   --app "python app.py" AWSControlTowerAccountFactoryStack-Demo-Account12 -c filepath=".github/data/accounts/Demo_Account12.json" --require-approval never 
