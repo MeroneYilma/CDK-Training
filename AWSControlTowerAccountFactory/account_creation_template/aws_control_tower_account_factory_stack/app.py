@@ -17,6 +17,7 @@ config_Demo_Account5 = load_config('Demo_Account5.json')
 config_Demo_Account9 = load_config('Demo_Account9.json')
 config_Demo_Account10 = load_config('Demo_Account10.json')
 config_Demo_Account11 = load_config('Demo_Account11.json')
+config_Demo_Account12 = load_config('Demo_Account12.json')
 
 def get_account_name(file_path):
     """Extract the account name from the file path and replace underscores with hyphens."""
