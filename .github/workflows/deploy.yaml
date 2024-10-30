@@ -43,4 +43,4 @@ jobs:
     - name: Deploy CDK Stack
       run: |
         source .env/bin/activate
-        cdk deploy AwsssoGroupMappingStack-Account-SSODemoAccount12 -c filepath=../../../.github/data/sso-groups/Demo_Account12_sso.json --require-approval never
+        cdk deploy AwsssoGroupMappingStack-Account-SSODemoAccount12 -c filepath=../../../../../.github/data/sso-groups/Demo_Account12_sso.json --require-approval never
