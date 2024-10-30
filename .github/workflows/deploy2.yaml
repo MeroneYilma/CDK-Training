@@ -7,7 +7,7 @@ on:
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
     - name: Checkout repository
@@ -19,19 +19,17 @@ jobs:
         python-version: '3.8'
 
     - name: List files for debugging
-      run: ls -R
+      run: dir /s /b
 
     - name: Install dependencies
       run: |
         python -m venv .env
-        echo "VIRTUAL_ENV=.env" >> $GITHUB_ENV
-        echo "PATH=$VIRTUAL_ENV/bin:$PATH" >> $GITHUB_ENV
-        source .env/bin/activate
-        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+        .\.env\Scripts\activate
+        if exist requirements.txt pip install -r requirements.txt
 
     - name: Install AWS CDK
       run: |
-        source .env/bin/activate
+        .\.env\Scripts\activate
         npm install -g aws-cdk
 
     - name: Configure AWS credentials
@@ -44,6 +42,6 @@ jobs:
     - name: Deploy stack
       working-directory: AWSControlTowerAccountFactory/account_creation_template/aws_control_tower_account_factory_stack
       run: |
-        source .env/bin/activate
-        ls -R  # List files to verify the location of configuration files
+        .\.env\Scripts\activate
+        dir /s /b  # List files to verify the location of configuration files
         npx cdk deploy AWSControlTowerAccountFactoryStack-Demo-Account12 -c filepath=Demo_Account12.json --app "python app.py" --require-approval never
