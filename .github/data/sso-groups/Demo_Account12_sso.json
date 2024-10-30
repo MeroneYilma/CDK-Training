@@ -1,0 +1,32 @@
+{
+    "aws": {
+        "AWS_ACCOUNT_ID": "209479296537",
+        "REGION": "us-east-1"
+    },
+    "cdk": {
+        "working_directory": "account_creation_template/aws_sso_group_mapping_stack"
+    },
+    "accounts": [
+        {
+            "AccountId": "825765414547",
+            "AccountName": "Account-SSODemoAccount12"
+        }
+    ],
+    "sso_groups_permission_sets": {
+        "AWS.All.Admin": "arn:aws:sso:::permissionSet/ssoins-72236c35d3a35c4d/ps-7b30f39e82e55ea1",
+        "AWS.ALL.RDS.Admin": "arn:aws:sso:::permissionSet/ssoins-72236c35d3a35c4d/ps-b694cf7b8600ebd8",
+        "AWS.All.ReadOnly": "arn:aws:sso:::permissionSet/ssoins-72236c35d3a35c4d/ps-c77b444b0c50e97e",
+        "AWS.IAM": "arn:aws:sso:::permissionSet/ssoins-72236c35d3a35c4d/ps-c77b444b0c50e97e",
+        "AWS.SOC": "arn:aws:sso:::permissionSet/ssoins-72236c35d3a35c4d/ps-c77b444b0c50e97e",
+        "AWS.TCB.MANDIANTUSER": "arn:aws:sso:::permissionSet/ssoins-72236c35d3a35c4d/ps-226960d39269b634"
+    },
+    "sso_groups_ids": {
+        "AWS.All.Admin": "b438d458-90b1-705a-4430-c6915956332e",
+        "AWS.ALL.RDS.Admin": "9458e498-e0b1-7000-954a-ef39b6bf600c",
+        "AWS.All.ReadOnly": "44c8b438-70f1-707e-8823-c269490e9748",
+        "AWS.IAM": "44784478-4041-7088-f7e7-77ab48e98f11",
+        "AWS.SOC": "d4c8d438-e011-702f-5581-1b03c074eca6",
+        "AWS.TCB.MANDIANTUSER": "e498f4f8-8021-70f1-ee78-8caef38ff17a"
+    },
+    "sso_instance_arn": "arn:aws:sso:::instance/ssoins-72236c35d3a35c4d"
+}
