@@ -1,16 +1,16 @@
-name: Deploy CDK Stack
+name: Deploy CDK Stack SSO
 
 on:
   push:
+    branches:
+      - main
+  pull_request:
     branches:
       - main
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: AWSControlTowerAccountFactory/account_creation_template/aws_sso_group_mapping_stack
 
     steps:
     - name: Checkout repository
@@ -24,14 +24,12 @@ jobs:
     - name: Install CDK
       run: npm install -g aws-cdk
 
-    - name: Initialize CDK app
-      run: cdk init app --language python
-
     - name: Set up virtual environment
       run: python -m venv .env
 
     - name: Activate virtual environment
-      run: . ./.env/bin/activate
+      shell: bash
+      run: source .env/bin/activate
 
     - name: Install dependencies
       run: pip install -r requirements.txt
