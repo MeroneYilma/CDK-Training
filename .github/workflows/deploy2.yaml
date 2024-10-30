@@ -13,13 +13,15 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
+    - name: Setup Node.js environment
+      uses: actions/setup-node@v2
+      with:
+        node-version: 18
+
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
         python-version: '3.8'
-
-    - name: List files for debugging
-      run: dir /s /b
 
     - name: Install dependencies
       run: |
@@ -27,10 +29,9 @@ jobs:
         .\.env\Scripts\activate
         if exist requirements.txt pip install -r requirements.txt
 
-    - name: Install AWS CDK
-      run: |
-        .\.env\Scripts\activate
-        npm install -g aws-cdk
+    - name: Install AWS CDK locally
+      working-directory: AWSControlTowerAccountFactory/account_creation_template/aws_control_tower_account_factory_stack
+      run: npm install aws-cdk
 
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
@@ -43,5 +44,4 @@ jobs:
       working-directory: AWSControlTowerAccountFactory/account_creation_template/aws_control_tower_account_factory_stack
       run: |
         .\.env\Scripts\activate
-        dir /s /b  # List files to verify the location of configuration files
-        npx cdk deploy AWSControlTowerAccountFactoryStack-Demo-Account12 -c filepath=Demo_Account12.json --app "python app.py" --require-approval never
+        npx cdk deploy AWSControlTowerAccountFactoryStack-Demo-Account12 -c filepath=Demo_Account12.json --require-approval never
