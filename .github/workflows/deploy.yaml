@@ -1,4 +1,4 @@
-name: Deploy AWS CDK Stack sso
+name: Deploy SSO-Grouups
 
 on:
   push:
@@ -13,34 +13,30 @@ jobs:
         working-directory: AWSControlTowerAccountFactory/account_creation_template/aws_sso_group_mapping_stack
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
+    - name: Checkout repository
+      uses: actions/checkout@v2
 
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.x'
+    - name: Setup Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '14'
 
-      - name: Install AWS CDK
-        run: npm install -g aws-cdk
+    - name: Install AWS CDK
+      run: npm install -g aws-cdk
 
-      - name: Set up Python virtual environment
-        run: python -m venv .env
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-1
 
-      - name: Install dependencies
-        run: |
-          source .env/bin/activate
-          pip install -r requirements.txt
-          pip install aws-cdk-lib
+    - name: Setup Python environment
+      run: |
+        python -m venv .env
+        . ./.env/Scripts/Activate
+        pip install -r requirements.txt
+        pip install aws-cdk-lib
 
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
-
-      - name: Deploy CDK stack
-        run: |
-          source .env/bin/activate
-          cdk deploy AwsssoGroupMappingStack-Account-SSODemoAccount12 -c filepath=Demo_Account12_sso.json --require-approval never
+    - name: Deploy CDK Stack
+      run: cdk deploy AwsssoGroupMappingStack-Account-SSODemoAccount12 -c filepath=Demo_Account12_sso.json --require-approval never

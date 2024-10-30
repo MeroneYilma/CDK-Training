@@ -1,4 +1,4 @@
-# name: Deploy AWS CDK Stack
+# name: Deploy AWS CDK Stack for New Accounts
 
 # on:
 #   push:
