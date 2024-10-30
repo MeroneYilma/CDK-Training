@@ -1,4 +1,4 @@
-name: Deploy CDK Stack
+name: Deploy AWS CDK Stack
 
 on:
   push:
@@ -7,44 +7,42 @@ on:
 
 jobs:
   deploy:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: AWSControlTowerAccountFactory/account_creation_template/aws_control_tower_account_factory_stack
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-    - name: Setup Node.js environment
-      uses: actions/setup-node@v2
-      with:
-        node-version: 18
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
 
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.8'
+      - name: Install AWS CDK
+        run: npm install -g aws-cdk
 
-    - name: Install dependencies
-      run: |
-        python -m venv .env
-        .\.env\Scripts\activate
-        if (Test-Path requirements.txt) { pip install -r requirements.txt }
+      - name: Initialize CDK app
+        run: cdk init app --language python
 
-    - name: Install AWS CDK locally
-      working-directory: AWSControlTowerAccountFactory/account_creation_template/aws_control_tower_account_factory_stack
-      run: |
-        .\.env\Scripts\activate
-        npm install aws-cdk
-        pip install aws-cdk-lib constructs
+      - name: Set up Python virtual environment
+        run: |
+          python -m venv .env
+          . ./.env/Scripts/Activate
 
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: us-east-1
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install aws-cdk-lib
 
-    - name: Deploy stack
-      working-directory: AWSControlTowerAccountFactory/account_creation_template/aws_control_tower_account_factory_stack
-      run: |
-        .\.env\Scripts\activate
-        npx cdk deploy AWSControlTowerAccountFactoryStack-Demo-Account12 -c filepath=Demo_Account12.json --require-approval never
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Deploy CDK stack
+        run: cdk deploy AWSControlTowerAccountFactoryStack-Demo-Account12 -c filepath=Demo_Account12.json --require-approval never
