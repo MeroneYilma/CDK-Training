@@ -33,8 +33,11 @@ jobs:
           pip install -r requirements.txt
           pip install aws-cdk-lib
 
-      - name: Debug - List files in data directory
-        run: ls -al ../../../CDK-Training/CDK-Training/.github/data/sso-groups
+      - name: Debug - List files in root directory
+        run: ls -al ../../../../
+
+      - name: Debug - List files in CDK-Training directory
+        run: ls -al ../../../../CDK-Training/CDK-Training/.github/data/sso-groups
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -46,4 +49,4 @@ jobs:
       - name: Deploy CDK stack
         run: |
           source .env/bin/activate
-          cdk deploy AwsssoGroupMappingStack-Account-SSODemoAccount12 -c filepath=../../../CDK-Training/CDK-Training/.github/data/sso-groups/Demo_Account12_sso.json --require-approval never
+          cdk deploy AwsssoGroupMappingStack-Account-SSODemoAccount12 -c filepath=../../../../CDK-Training/CDK-Training/.github/data/sso-groups/Demo_Account12_sso.json --require-approval never
