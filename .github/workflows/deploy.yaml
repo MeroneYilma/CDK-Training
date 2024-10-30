@@ -8,9 +8,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: AWSControlTowerAccountFactory/account_creation_template/aws_sso_group_mapping_stack
+
 
     steps:
       - name: Checkout repository
