@@ -34,10 +34,10 @@ jobs:
           pip install aws-cdk-lib
 
       - name: Debug - List files in root directory
-        run: ls -al ../../../../
+        run: ls -al ../../../../../
 
       - name: Debug - List files in CDK-Training directory
-        run: ls -al ../../../../CDK-Training/CDK-Training/.github/data/sso-groups
+        run: ls -al ../../../../../CDK-Training/CDK-Training/.github/data/sso-groups
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
