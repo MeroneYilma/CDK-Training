@@ -1,94 +1,46 @@
-name: CDK Deploy
+name: Deploy AWS CDK Stack
 
 on:
-  # push:
-  #   branches: ["main"]
+  push:
+    branches:
+      - main
 
 jobs:
-  aws_cdk:
+  deploy:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: AWSControlTowerAccountFactory/account_creation_template/aws_sso_group_mapping_stack
+
     steps:
-      - name: Check out code
+      - name: Checkout repository
         uses: actions/checkout@v2
-        with:
-          fetch-depth: 2
-
-      - name: Ensure lock file exists
-        run: |
-          if [ ! -f package-lock.json ] && [ ! -f yarn.lock ]; then
-            echo "{}" > package.json
-            npm install
-          fi
-
-      - name: Setup Node.js environment
-        uses: actions/setup-node@v2
-        with:
-          node-version: 18
 
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: '3.8'
+          python-version: '3.x'
 
-      - name: Ensure lock file exists in subdirectory
-        run: |
-          if [ ! -d AWSControlTowerAccountFactory/account_creation_template/aws_sso_group_mapping_stack ]; then
-            echo "Directory AWSControlTowerAccountFactory/account_creation_template/aws_sso_group_mapping_stack does not exist"
-            exit 1
-          fi
-          cd AWSControlTowerAccountFactory/account_creation_template/aws_sso_group_mapping_stack
-          if [ ! -f package-lock.json ] && [ ! -f yarn.lock ]; then
-            npm install
-          fi
-
-      - name: Install dependencies
-        working-directory: AWSControlTowerAccountFactory/account_creation_template/aws_sso_group_mapping_stack
-        run: npm ci
-
-      - name: Install AWS CDK locally
-        working-directory: AWSControlTowerAccountFactory/account_creation_template/aws_sso_group_mapping_stack
-        run: npm install aws-cdk
+      - name: Install AWS CDK
+        run: npm install -g aws-cdk
 
       - name: Set up Python virtual environment
-        working-directory: AWSControlTowerAccountFactory/account_creation_template/aws_sso_group_mapping_stack
         run: python -m venv .env
 
-      - name: Activate virtual environment
-        working-directory: AWSControlTowerAccountFactory/account_creation_template/aws_sso_group_mapping_stack
-        run: source .env/bin/activate
-
-      - name: Install Python dependencies
-        working-directory: AWSControlTowerAccountFactory/account_creation_template/aws_sso_group_mapping_stack
-        run: pip install -r requirements.txt
-
-      - name: Install AWS CDK library
-        working-directory: AWSControlTowerAccountFactory/account_creation_template/aws_sso_group_mapping_stack
-        run: pip install aws-cdk-lib
+      - name: Install dependencies
+        run: |
+          source .env/bin/activate
+          pip install -r requirements.txt
+          pip install aws-cdk-lib
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: "us-east-1"
+          aws-region: us-east-1
 
-      - name: Ensure sso-groups directory and JSON files exist
+      - name: Deploy CDK stack
         run: |
-          if [ ! -d AWSControlTowerAccountFactory/data/sso-groups ]; then
-            echo "Directory AWSControlTowerAccountFactory/data/sso-groups does not exist"
-            exit 1
-          fi
-          if [ -z "$(ls -A AWSControlTowerAccountFactory/data/sso-groups/*.json 2>/dev/null)" ]; then
-            echo "No JSON files found in AWSControlTowerAccountFactory/data/sso-groups"
-            exit 1
-          fi
-          # Print the contents of the directory for debugging
-          ls -l AWSControlTowerAccountFactory/data/sso-groups
-
-      - name: Synth stack
-        working-directory: AWSControlTowerAccountFactory/account_creation_template/aws_sso_group_mapping_stack
-        run: npx cdk synth
-
-      - name: Deploy stack
-        working-directory: AWSControlTowerAccountFactory/account_creation_template/aws_sso_group_mapping_stack
-        run: npx cdk deploy AwsssoGroupMappingStack-Account-SSODemoAccount11 -c filepath="AWSControlTowerAccountFactory/data/sso-groups/Demo_Account11_sso.json" --require-approval never
+          source .env/bin/activate
+          cdk deploy AwsssoGroupMappingStack-Account-SSODemoAccount12 -c filepath=Demo_Account12_sso.json --require-approval never
