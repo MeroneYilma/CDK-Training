@@ -24,18 +24,17 @@ jobs:
         python-version: '3.8'
 
     - name: Install dependencies
-      shell: bash
       run: |
         python -m venv .env
-        source .env/Scripts/activate
-        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+        .\.env\Scripts\activate
+        if (Test-Path requirements.txt) { pip install -r requirements.txt }
 
     - name: Install AWS CDK locally
       working-directory: AWSControlTowerAccountFactory/account_creation_template/aws_control_tower_account_factory_stack
-      shell: bash
       run: |
-        source .env/Scripts/activate
+        .\.env\Scripts\activate
         npm install aws-cdk
+        pip install aws-cdk-lib  
 
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
@@ -46,7 +45,6 @@ jobs:
 
     - name: Deploy stack
       working-directory: AWSControlTowerAccountFactory/account_creation_template/aws_control_tower_account_factory_stack
-      shell: bash
       run: |
-        source .env/Scripts/activate
-        npx cdk deploy AWSControlTowerAccountFactoryStack-Demo-Account12 -c filepath=Demo_Account12.json --app "python app.py" --require-approval never
+        .\.env\Scripts\activate
+        npx cdk deploy AWSControlTowerAccountFactoryStack-Demo-Account12 -c filepath=Demo_Account12.json --require-approval never
