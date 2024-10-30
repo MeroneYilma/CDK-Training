@@ -2,8 +2,8 @@ name: Deploy AWS CDK Stack
 
 on:
   push:
-    branches:
-      - main
+    # branches:
+      # - main
 
 jobs:
   deploy:
