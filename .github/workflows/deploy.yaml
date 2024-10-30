@@ -26,9 +26,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          . .\.env\Scripts\Activate 
-          pip install -r requirements.txt
-          python.exe -m pip install --upgrade pi
+          . .env/bin/activate
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; else echo "requirements.txt not found"; fi
           pip install aws-cdk-lib
 
       - name: Configure AWS credentials
@@ -40,6 +39,6 @@ jobs:
 
       - name: Deploy CDK Stack
         run: |
-          . .\.env\Scripts\Activate 
+          . .env/bin/activate
           cdk deploy AwsssoGroupMappingStack-Account-SSODemoAccount12 -c filepath=Demo_Account12_sso.json --require-approval never
-       
+        working-directory: AWSControlTowerAccountFactory/account_creation_template/aws_sso_group_mapping_stack
