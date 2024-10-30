@@ -24,6 +24,9 @@ jobs:
       - name: Set up Python virtual environment
         run: python -m venv .env
 
+      - name: Verify virtual environment creation
+        run: ls -la .env/bin
+
       - name: Install dependencies
         run: |
           . .env/bin/activate
