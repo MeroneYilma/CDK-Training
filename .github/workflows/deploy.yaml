@@ -19,7 +19,7 @@ jobs:
     - name: Setup Node.js
       uses: actions/setup-node@v2
       with:
-        node-version: '14'
+        node-version: '18'  # Use a supported Node.js version
 
     - name: Install AWS CDK
       run: npm install -g aws-cdk
