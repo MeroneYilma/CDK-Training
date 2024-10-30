@@ -33,6 +33,9 @@ jobs:
           pip install -r requirements.txt
           pip install aws-cdk-lib
 
+      - name: Debug - List files in data directory
+        run: ls -al ../../../CDK-Training/CDK-Training/.github/data/sso-groups
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
