@@ -24,9 +24,6 @@ jobs:
       - name: Install AWS CDK
         run: npm install -g aws-cdk
 
-      - name: Initialize CDK app
-        run: cdk init app --language python
-
       - name: Set up Python virtual environment
         run: |
           python -m venv .env
