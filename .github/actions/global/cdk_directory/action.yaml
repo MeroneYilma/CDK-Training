@@ -2,6 +2,14 @@ name: Configure AWS CDK Working Directory used for deployment
 author: Suraj Singh Thakur
 description: GitHub Action to configure AWS CDK Working Directory used for deployment
 
+on:
+  workflow_call:
+    inputs:
+      json_data_file:
+        description: Name of JSON Data File
+        required: true
+        default: ""
+
 inputs:
   json_data_file:
     description: Name of JSON Data File
