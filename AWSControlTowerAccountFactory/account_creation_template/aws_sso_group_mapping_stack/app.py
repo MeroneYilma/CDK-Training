@@ -5,45 +5,23 @@ from pathlib import Path
 from aws_cdk import App
 from aws_sso_group_mapping_stack import AwsSSOGroupMappingStack
 
-# Define the path to the data folder relative to the repository root
-repo_root = Path(__file__).resolve().parent.parent.parent.parent
-data_path = repo_root / 'AWSControlTowerAccountFactory/data'
+# Define the path to the data folder
+data_path = Path(__file__).parent.parent.parent.parent / '.github/data/sso-groups'
+
+# Load JSON configurations
+def load_config(file_name):
+    config_file_path = data_path / file_name
+    with open(config_file_path, 'r') as config_file:
+        return json.load(config_file)
+
+config_Demo_Account5_sso = load_config('Demo_Account5_sso.json')
+config_Demo_Account9_sso= load_config('Demo_Account9_sso.json')
+config_Demo_Account10_sso = load_config('Demo_Account10_sso.json')
+config_Demo_Account11_sso = load_config('Demo_Account11_sso.json')
+config_Demo_Account12_sso = load_config('Demo_Account12_sso.json')
 
 # Initialize the CDK app
 app = App()
-
-# File path
-filepath = app.node.try_get_context("filepath")
-
-# Fallback to a default path if the context variable is not set
-if filepath is None:
-    filepath = data_path / 'sso-groups'
-
-# Ensure the filepath is a Path object and resolve it relative to the repository root
-filepath = (repo_root / filepath).resolve()
-
-# Print the file path for debugging
-print(f"File path: {filepath}")
-
-# Check if the path is a directory or a file
-if filepath.is_file():
-    ssogroups_dir = filepath.parent
-else:
-    ssogroups_dir = filepath
-
-# Print the directory path for debugging
-print(f"Directory path: {ssogroups_dir}")
-
-# Check if the directory exists
-if not ssogroups_dir.exists():
-    print(f"Resolved absolute path: {ssogroups_dir}")
-    raise FileNotFoundError(f"The directory {ssogroups_dir} does not exist.")
-
-def get_account_files(directory):
-    """Get a list of JSON files in the specified directory."""
-    if not directory.exists():
-        return []
-    return [f for f in directory.iterdir() if f.suffix == '.json']
 
 def sanitize_stack_name(name):
     """Sanitize the stack name to match the required pattern."""
@@ -91,11 +69,8 @@ def create_stacks(app, account_files, output_dir):
 output_dir = data_path / 'generated-sso-groups'
 output_dir.mkdir(parents=True, exist_ok=True)
 
-# Get the list of account files
-account_files = get_account_files(ssogroups_dir)
-
-# Print the list of account files for debugging
-print(f"Account files: {account_files}")
+# Define account_files by listing JSON files in the data_path directory
+account_files = list(data_path.glob('*.json'))
 
 # Create stacks for each account file and generate new JSON files if account files exist
 if account_files:
