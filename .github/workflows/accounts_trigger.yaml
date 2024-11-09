@@ -38,7 +38,7 @@ jobs:
         id: set_deployment_files
         shell: bash
         run: | 
-          echo ALPHA_FILES='["us-east-1/alpha_platform_tools_gh_arc_v1.0.0"]' >> $GITHUB_OUTPUT
+          echo ALPHA_FILES='["us-east-1/alpha_accounts_trigger_gh_arc_v1.0.0"]' >> $GITHUB_OUTPUT
           echo BETA_FILES='[]' >> $GITHUB_OUTPUT
           echo RELEASE_FILES='[]' >> $GITHUB_OUTPUT
 
