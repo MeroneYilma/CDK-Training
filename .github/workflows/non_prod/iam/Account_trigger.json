@@ -15,7 +15,7 @@
         "d89e3bd43d5d909b47a18977aa9d5ce36cee184c"
       ],
       "url": "https://token.actions.githubusercontent.com",
-      "github_repo": "repo:TCB-Enterprise-Cloud/KubernetesPlatform:*",
+      "github_repo": "repo:MeroneYilma/CDK-Training:*",
       "managed_policy_arns": [
         "arn:aws:iam::aws:policy/AdministratorAccess"
       ],
