@@ -46,9 +46,9 @@ jobs:
       - name: Synthesize CDK app
         run: |
           source .env/bin/activate
-          cdk synth -c filepath=/home/runner/work/CDK-Training/CDK-Training/.github/data/accounts/Demo_Account12.json
+          cdk synth --app "python app.py" -c filepath=/home/runner/work/CDK-Training/CDK-Training/.github/data/accounts/Demo_Account12.json
 
       - name: Deploy CDK stack
         run: |
           source .env/bin/activate
-          cdk deploy AWSControlTowerAccountFactoryStack-Demo-Account12 -c filepath=/home/runner/work/CDK-Training/CDK-Training/.github/data/accounts/Demo_Account12.json --require-approval never
+          cdk deploy AWSControlTowerAccountFactoryStack-Demo-Account12 --app "python app.py" -c filepath=/home/runner/work/CDK-Training/CDK-Training/.github/data/accounts/Demo_Account12.json --require-approval never
