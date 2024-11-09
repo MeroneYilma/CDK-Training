@@ -43,6 +43,11 @@ jobs:
           echo "Processing JSON file: ${{ inputs.json_file_path }}/${{ inputs.json_file }}"
           echo "Environment: ${{ inputs.gh_environment }}"
 
+      - name: Synthesize CDK app
+        run: |
+          source .env/bin/activate
+          cdk synth --app "python /home/runner/work/CDK-Training/CDK-Training/.github/data/accounts/Demo_Account12.json"
+
       - name: Deploy CDK stack
         run: |
           source .env/bin/activate
