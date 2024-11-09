@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
 
 env:
-  ALPHA: True
+  ALPHA: False
   BETA: False
   RELEASE: False
 
