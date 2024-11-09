@@ -1,4 +1,4 @@
-name: 03 - Accounts Trigger Workflow
+name: Accounts_Trigger_Workflow
 
 # The 'on' section defines the events that trigger the workflow.
 # Added 'push' event to trigger the workflow on push to the 'main' branch.
@@ -59,8 +59,6 @@ jobs:
       json_file_path: .github/workflows/data
       json_file: ${{ matrix.json_file }}
       gh_environment: ALPHA
-      ghcr_image_repo: tcb-enterprise-cloud/kubernetes.platform.images
-      ghcr_image_tag: "3_20_2024"
 
   BETA:
     needs: [SELECT_ENVIRONMENT, PROCESS_JSON_FILES]
@@ -74,8 +72,6 @@ jobs:
       json_file_path: .github/workflows/data
       json_file: ${{ matrix.json_file }}
       gh_environment: BETA
-      ghcr_image_repo: tcb-enterprise-cloud/kubernetes.platform.images
-      ghcr_image_tag: "3_20_2024"
 
   RELEASE:
     needs: [SELECT_ENVIRONMENT, PROCESS_JSON_FILES]
@@ -89,5 +85,3 @@ jobs:
       json_file_path: .github/workflows/data
       json_file: ${{ matrix.json_file }}
       gh_environment: RELEASE
-      ghcr_image_repo: tcb-enterprise-cloud/kubernetes.platform.images
-      ghcr_image_tag: "3_20_2024"

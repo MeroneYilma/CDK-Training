@@ -1,93 +1,43 @@
-name: 03 - Accounts Trigger Workflow
+name: Accounts Trigger
 
-# The 'on' section defines the events that trigger the workflow.
-# Added 'push' event to trigger the workflow on push to the 'main' branch.
 on:
-  push:
-    branches:
-      - main
-  workflow_dispatch:
-
-env:
-  # Set ALPHA to True to trigger the workflow for the Alpha environment
-  ALPHA: True
-  BETA: False
-  RELEASE: False
+  workflow_call:
+    inputs:
+      json_file_path:
+        required: true
+        type: string
+      json_file:
+        required: true
+        type: string
+      gh_environment:
+        required: true
+        type: string
 
 jobs:
-  SELECT_ENVIRONMENT:
+  trigger_workflow:
     runs-on: ubuntu-latest
     steps:
-      - name: Set Environment
-        id: set-env
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
         run: |
-          echo ALPHA=$ALPHA >> $GITHUB_OUTPUT
-          echo BETA=$BETA >> $GITHUB_OUTPUT
-          echo RELEASE=$RELEASE >> $GITHUB_OUTPUT
+          python -m venv .env
+          source .env/bin/activate
+          pip install -r requirements.txt
 
-    outputs:
-      ALPHA: ${{ steps.set-env.outputs.ALPHA }}
-      BETA: ${{ steps.set-env.outputs.BETA }}
-      RELEASE: ${{ steps.set-env.outputs.RELEASE }}
+      - name: Process JSON file
+        run: |
+          # Your script to process the JSON file using the inputs
+          echo "Processing JSON file: ${{ inputs.json_file_path }}/${{ inputs.json_file }}"
+          echo "Environment: ${{ inputs.gh_environment }}"
 
-  PROCESS_JSON_FILES:
-    needs: [SELECT_ENVIRONMENT]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Set Deployment related JSON Files
-        id: set_deployment_files
-        shell: bash
-        run: | 
-          echo ALPHA_FILES='["us-east-1/alpha_accounts_trigger_gh_arc_v1.0.0"]' >> $GITHUB_OUTPUT
-          echo BETA_FILES='[]' >> $GITHUB_OUTPUT
-          echo RELEASE_FILES='[]' >> $GITHUB_OUTPUT
-
-    outputs: 
-      alpha_deployment_files_output: ${{ steps.set_deployment_files.outputs.ALPHA_FILES }}
-      beta_deployment_files_output: ${{ steps.set_deployment_files.outputs.BETA_FILES }}
-      release_deployment_files_output: ${{ steps.set_deployment_files.outputs.RELEASE_FILES }}
-
-  ALPHA:
-    needs: [SELECT_ENVIRONMENT, PROCESS_JSON_FILES]
-    if: needs.SELECT_ENVIRONMENT.outputs.ALPHA == 'True'
-    strategy:
-      fail-fast: true
-      matrix:
-        json_file: ${{ fromJSON(needs.PROCESS_JSON_FILES.outputs.alpha_deployment_files_output) }}
-    uses: MeroneYilma/CDK-Training/.github/workflows/accounts_trigger.yaml@main
-    with:
-      json_file_path: .github/workflows/data
-      json_file: ${{ matrix.json_file }}
-      gh_environment: ALPHA
-      ghcr_image_repo: tcb-enterprise-cloud/kubernetes.platform.images
-      ghcr_image_tag: "3_20_2024"
-
-  BETA:
-    needs: [SELECT_ENVIRONMENT, PROCESS_JSON_FILES]
-    if: needs.SELECT_ENVIRONMENT.outputs.BETA == 'True'
-    strategy:
-      fail-fast: true
-      matrix:
-        json_file: ${{ fromJSON(needs.PROCESS_JSON_FILES.outputs.beta_deployment_files_output) }}
-    uses: MeroneYilma/CDK-Training/.github/workflows/accounts_trigger.yaml@main
-    with:
-      json_file_path: .github/workflows/data
-      json_file: ${{ matrix.json_file }}
-      gh_environment: BETA
-      ghcr_image_repo: tcb-enterprise-cloud/kubernetes.platform.images
-      ghcr_image_tag: "3_20_2024"
-
-  RELEASE:
-    needs: [SELECT_ENVIRONMENT, PROCESS_JSON_FILES]
-    if: needs.SELECT_ENVIRONMENT.outputs.RELEASE == 'True'
-    strategy:
-      fail-fast: true
-      matrix:
-        json_file: ${{ fromJSON(needs.PROCESS_JSON_FILES.outputs.release_deployment_files_output) }}
-    uses: MeroneYilma/CDK-Training/.github/workflows/accounts_trigger.yaml@main
-    with:
-      json_file_path: .github/workflows/data
-      json_file: ${{ matrix.json_file }}
-      gh_environment: RELEASE
-      ghcr_image_repo: tcb-enterprise-cloud/kubernetes.platform.images
-      ghcr_image_tag: "3_20_2024"
+      - name: Deploy CDK stack
+        run: |
+          source .env/bin/activate
+          cdk deploy AWSControlTowerAccountFactoryStack-Demo-Account12 -c filepath=${{ inputs.json_file_path }}/${{ inputs.json_file }} --require-approval never
