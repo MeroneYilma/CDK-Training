@@ -1,11 +1,11 @@
-name: 03 - SSO Mapping Trigger Workflow
-on:
-  workflow_dispatch:
+# name: 03 - SSO Mapping Trigger Workflow
+# on:
+#   workflow_dispatch:
 
-env:
-  ALPHA: False
-  BETA: False
-  RELEASE: False
+# env:
+#   ALPHA: False
+#   BETA: False
+#   RELEASE: False
 
 jobs:
   SELECT_ENVIRONMENT:
