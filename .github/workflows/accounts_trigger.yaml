@@ -1,4 +1,4 @@
-name: 03 - Platform Tools Trigger Workflow
+name: 03 - Account Creation Trigger Workflow
 on:
   workflow_dispatch:
 
@@ -31,7 +31,7 @@ jobs:
         id: set_deployment_files
         shell: bash
         run: | 
-          echo ALPHA_FILES='["us-east-1/alpha_platform_tools_gh_arc_v1.0.0"]' >> $GITHUB_OUTPUT
+          echo ALPHA_FILES='["us-east-1/alpha_account_creation_gh_arc_v1.0.0"]' >> $GITHUB_OUTPUT
           echo BETA_FILES='[]' >> $GITHUB_OUTPUT
           echo RELEASE_FILES='[]' >> $GITHUB_OUTPUT
 
@@ -47,7 +47,7 @@ jobs:
       fail-fast: true
       matrix:
         json_file: ${{ fromJSON(needs.PROCESS_JSON_FILES.outputs.alpha_deployment_files_output) }}
-    uses: TCB-Enterprise-Cloud/KubernetesPlatform/.github/workflows/accounts_trigger.yaml@alpha
+    uses: MeroneYilma/CDK-Training/.github/workflows/accounts_trigger.yaml@alpha
     with:
       json_file_path: .github/workflows/data
       json_file: ${{ matrix.json_file }}
@@ -62,7 +62,7 @@ jobs:
       fail-fast: true
       matrix:
         json_file: ${{ fromJSON(needs.PROCESS_JSON_FILES.outputs.beta_deployment_files_output) }}
-    uses: TCB-Enterprise-Cloud/KubernetesPlatform/.github/workflows/accounts_trigger.yaml@alpha
+    uses: MeroneYilma/CDK-Training/.github/workflows/accounts_trigger.yaml@alpha
     with:
       json_file_path: .github/workflows/data
       json_file: ${{ matrix.json_file }}
@@ -77,7 +77,7 @@ jobs:
       fail-fast: true
       matrix:
         json_file: ${{ fromJSON(needs.PROCESS_JSON_FILES.outputs.release_deployment_files_output) }}
-    uses: TCB-Enterprise-Cloud/KubernetesPlatform/.github/workflows/accounts_trigger.yaml@alpha
+    uses: MeroneYilma/CDK-Training/.github/workflows/accounts_trigger.yaml@alpha
     with:
       json_file_path: .github/workflows/data
       json_file: ${{ matrix.json_file }}
