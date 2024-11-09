@@ -1,0 +1,24 @@
+name: Configure AWS CDK Working Directory used for deployment
+author: Suraj Singh Thakur
+description: GitHub Action to configure AWS CDK Working Directory used for deployment
+
+inputs:
+  json_data_file:
+    description: Name of JSON Data File
+    required: true
+    default: ""
+
+outputs:
+  working_directory_output:
+    description: Name of AWS CDK Working Directory
+    value: ${{ steps.get_aws_cdk_path.outputs.working_directory }}
+
+runs:
+  using: composite
+  steps:
+    - name: Get AWS CDK Working Directory used for deployment
+      id: get_aws_cdk_path
+      shell: bash
+      run: | 
+        working_directory=$(jq -r '.cdk.working_directory' ${{ inputs.json_data_file }})
+        echo working_directory=$working_directory >> $GITHUB_OUTPUT

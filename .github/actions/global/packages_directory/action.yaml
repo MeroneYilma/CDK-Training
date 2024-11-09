@@ -1,0 +1,24 @@
+name: Configure Packages Working Directory used for deployment
+author: Suraj Singh Thakur
+description: GitHub Action to configure Packages Working Directory used for deployment
+
+inputs:
+  json_data_file:
+    description: Name of JSON Data File
+    required: true
+    default: ""
+
+outputs:
+  working_directory_output:
+    description: Name of Packages Working Directory
+    value: ${{ steps.get_packages_path.outputs.working_directory }}
+
+runs:
+  using: composite
+  steps:
+    - name: Get Packages Working Directory used for deployment
+      id: get_packages_path
+      shell: bash
+      run: | 
+        working_directory=$(jq -r '.packages.working_directory' ${{ inputs.json_data_file }})
+        echo working_directory=$working_directory >> $GITHUB_OUTPUT
