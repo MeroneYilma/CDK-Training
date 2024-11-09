@@ -1,0 +1,25 @@
+{
+    "kms": {
+        "key_alias": "testtrait"
+    },
+    "secrets": {
+        "secret_name": "my-secret"
+    },
+    "parameter_groups": {
+        "cluster_parameters": {
+            "rds.force_ssl": "1"
+        },
+        "db_parameters": {
+            "rds.force_ssl": "1"
+        }
+    },
+    "aurora_db_global": {
+        "global_cluster_identifier": "globaldb",
+        "engine": "aurora-postgresql",
+        "primary_instance_type": "db.r5.large",
+        "secondary_instance_type": "db.r5.large"
+    },
+    "proxy": {
+        "require_tls": true
+    }
+}

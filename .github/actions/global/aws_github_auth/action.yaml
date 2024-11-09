@@ -1,0 +1,43 @@
+name: Configure AWS used to authenticate with GitHub
+author: Suraj Singh Thakur
+description: GitHub Action to configure AWS used to authenticate with GitHub
+
+inputs:
+  json_data_file:
+    description: Name of JSON Data File
+    required: true
+    default: ""
+
+outputs:
+  aws_account_id_output:
+    description: Name of AWS ACCOUNT ID
+    value: ${{ steps.get_aws_config.outputs.AWS_ACCOUNT_ID }}
+
+  github_oidc_iam_role_output:
+    description: Name of AWS OIDC IAM ROLE required for authenticating to GitHub
+    value: ${{ steps.get_aws_config.outputs.GITHUB_OIDC_IAM_ROLE }}
+
+  region_output:
+    description: Name of AWS REGION
+    value: ${{ steps.get_aws_config.outputs.REGION }}
+
+runs:
+  using: composite
+  steps:
+    - name: Get AWS Configuration details used to authenticate with GitHub
+      id: get_aws_config
+      shell: bash
+      run: | 
+        AWS_ACCOUNT_ID=$(jq -r '.aws.AWS_ACCOUNT_ID' ${{ inputs.json_data_file }})
+        GITHUB_OIDC_IAM_ROLE=$(jq -r '.aws.GITHUB_OIDC_IAM_ROLE' ${{ inputs.json_data_file }})
+        REGION=$(jq -r '.aws.REGION' ${{ inputs.json_data_file }})
+
+        echo AWS_ACCOUNT_ID=$AWS_ACCOUNT_ID >> $GITHUB_OUTPUT
+        echo GITHUB_OIDC_IAM_ROLE=$GITHUB_OIDC_IAM_ROLE >> $GITHUB_OUTPUT
+        echo REGION=$REGION >> $GITHUB_OUTPUT
+
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume: arn:aws:iam::${{ steps.get_aws_config.outputs.AWS_ACCOUNT_ID }}:role/${{ steps.get_aws_config.outputs.GITHUB_OIDC_IAM_ROLE }}
+        aws-region: ${{ steps.get_aws_config.outputs.REGION }}
