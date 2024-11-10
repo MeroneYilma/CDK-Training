@@ -39,16 +39,15 @@ jobs:
       - name: Process JSON file
         run: |
           source .env/bin/activate
-          # Your script to process the JSON file using the inputs
           echo "Processing JSON file: ${{ inputs.json_file_path }}/${{ inputs.json_file }}"
           echo "Environment: ${{ inputs.gh_environment }}"
 
       - name: Synthesize CDK app
         run: |
           source .env/bin/activate
-          cdk synth AWSControlTowerAccountFactoryStack-Demo-Account12 -c filepath=Demo_Account12.json --require-approval never
+          cdk synth --app "python app.py" -c filepath=${{ inputs.json_file_path }}/${{ inputs.json_file }}
 
       - name: Deploy CDK stack
         run: |
           source .env/bin/activate
-          cdk deploy AWSControlTowerAccountFactoryStack-Demo-Account12 -c filepath=Demo_Account12.json --require-approval never
+          cdk deploy AWSControlTowerAccountFactoryStack-Demo-Account12 --app "python app.py" -c filepath=${{ inputs.json_file_path }}/${{ inputs.json_file }} --require-approval never
