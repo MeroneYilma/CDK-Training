@@ -5,6 +5,31 @@
 - Step 1 - `cdk bootstrap --profile BackupVault_East aws://235712742900/us-east-1`
 - Step 2 - `cdk deploy -c filepath=C:\CloudRepo\cloud.cdk.poc\.github\workflows\non_prod\iam\TCB_BackupVaultAccount.json --profile BackupVault`
 
+ - Step 3 - Make sure trust relationship is updated with the Github Repo name in the iam role we deploy in Step 2
+
+ `
+ {
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Principal": {
+                "Federated": "arn:aws:iam::209479296537:oidc-provider/token.actions.githubusercontent.com"
+            },
+            "Action": "sts:AssumeRoleWithWebIdentity",
+            "Condition": {
+                "StringEquals": {
+                    "token.actions.githubusercontent.com:aud": "sts.amazonaws.com"
+                },
+                "StringLike": {
+                    "token.actions.githubusercontent.com:sub": "repo:MeroneYilma/CDK-Training:*"
+                }
+            }
+        }
+    ]
+}
+`
+
 
 This is a blank project for CDK development with Python.
 
