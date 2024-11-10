@@ -1,5 +1,5 @@
 name: Accounts Trigger
-#final
+
 on:
   workflow_call:
     inputs:
@@ -15,7 +15,7 @@ on:
 
 # Added permissions section to allow OIDC authentication
 permissions:
-  id-token: write
+  id-token: write  # Allows the workflow to request an OIDC token
   contents: read
 
 jobs:
