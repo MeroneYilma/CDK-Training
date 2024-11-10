@@ -37,7 +37,7 @@ jobs:
           pip install aws-cdk-lib
 
       - name: Configure AWS used to authenticate with GitHub
-        uses: ./.github/actions/configure-aws-auth  # Path to your custom action
+        uses: ./.github/actions/global/aws_github_auth  # Correct path to your custom action
         with:
           json_data_file: .github/data/accounts/Demo_Account12.json  # Path to your JSON data file
 
