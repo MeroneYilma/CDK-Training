@@ -42,8 +42,6 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
-          role-to-assume: arn:aws:iam::209479296537:role/GitHubAction-AssumeRoleWithAction
-          role-session-name: GitHubActionsSession 
 
       - name: Process JSON file
         run: |
