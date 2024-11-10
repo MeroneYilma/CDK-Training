@@ -41,9 +41,11 @@ jobs:
           pip install aws-cdk-lib
 
       - name: Configure AWS used to authenticate with GitHub
-        uses: ./.github/actions/global/aws_github_auth  # Correct path to your custom action
+        uses: aws-actions/configure-aws-credentials@v4
         with:
-          json_data_file: .github/data/accounts/Demo_Account9_sso.json  # Path to your JSON data file
+          role-to-assume: arn:aws:iam::209479296537:role/GitHubAction-AssumeRoleWithAction
+          aws-region: us-east-1
+          audience: sts.amazonaws.com
 
       - name: Process JSON file
         run: |
@@ -59,4 +61,4 @@ jobs:
       - name: Deploy CDK stack
         run: |
           source .env/bin/activate
-          cdk deploy AwsssoGroupMappingStack-Account-SSODemoAccount9 --app "python AWSControlTowerAccountFactory/account_creation_template/aws_sso_group_mapping_stack/app.py" -c filepath=${{ inputs.json_file_path }}/${{ inputs.json_file }} --require-approval never
+          cdk deploy AwsssoGroupMappingStack-Account-SSODemoAccount10 --app "python AWSControlTowerAccountFactory/account_creation_template/aws_sso_group_mapping_stack/app.py" -c filepath=${{ inputs.json_file_path }}/${{ inputs.json_file }} --require-approval never
