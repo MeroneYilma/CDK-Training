@@ -1,6 +1,8 @@
 {
     "aws": {
         "AWS_ACCOUNT_ID": "209479296537",
+        "GITHUB_OIDC_IAM_ROLE": "GitHubAction-AssumeRoleWithAction",
+        "IAM_IDENTITY": "AWSReservedSSO_AWSAdministratorAccess_5b60cb28443d41f8",
         "REGION": "us-east-1"
     },
     "cdk": {
