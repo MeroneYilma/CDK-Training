@@ -1,0 +1,25 @@
+{
+    "aws": {
+        "AWS_ACCOUNT_ID": "964136190063",
+        "REGION": "us-east-1"
+    },
+    "cdk": {
+        "working_directory": "cloud.cdk.poc/cdk_backup_plan_stack"
+    },
+    "stack_account": "964136190063",
+    "stack_region": "us-west-2",
+    "secondary_backup_vault_arn": "arn:aws:backup:us-west-2:235712742900:backup-vault:Secondary-CE-NP-BackupVault",
+    "stack_encryption_key_arn": "arn:aws:kms:us-west-2:964136190063:key/26c328e7-0c09-4cd5-a78c-9b0acd412ddf",
+    "vault_name": "Main-cloudNP-BackupVault",
+    "plan_name": "CloudNP-BackupPlan",
+    "plan_rule_name": "CloudNP-BackupPlan-Rule",
+    "role_arn": "arn:aws:iam::964136190063:role/service-role/AWSBackupDefaultServiceRole",
+    "vault_iam_role": [
+        "arn:aws:iam::964136190063:role/AWSBackupCustomRole",
+        "arn:aws:iam::235712742900:role/service-role/AWSBackupDefaultServiceRole",
+        "arn:aws:iam::235712742900:role/aws-service-role/backup.amazonaws.com/AWSServiceRoleForBackup"
+    ],
+    "selection_resource_arn": "arn:aws:rds:us-west-2:964136190063:db:bk-rds-cloudengineer-rdsnp-dr01",
+    "resource_selection_iam_role": "arn:aws:iam::964136190063:role/service-role/AWSBackupDefaultServiceRole",
+    "selection_name": "CloudEngineeringReplicaRDS"
+}
