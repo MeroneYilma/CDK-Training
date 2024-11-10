@@ -13,6 +13,11 @@ on:
         required: true
         type: string
 
+# Added permissions section to allow OIDC authentication
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   trigger_workflow:
     runs-on: ubuntu-latest
