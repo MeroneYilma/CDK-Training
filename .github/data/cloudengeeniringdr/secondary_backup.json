@@ -1,0 +1,12 @@
+{
+    "aws": {
+        "AWS_ACCOUNT_ID": "235712742900",
+        "REGION": "us-west-2"
+    },
+    "cdk": {
+        "working_directory": "cloud.cdk.poc/secondarybackup_cloudengineer_dr_vault_stack"
+    },
+    "vault_name": "Secondary-Cloud-DR-BackupVault",
+    "backup_role_arn": "arn:aws:iam::235712742900:role/service-role/AWSBackupDefaultServiceRole",
+    "secondary_backup_vault_encryption_key_arn": "arn:aws:kms:us-west-2:235712742900:key/mrk-ca5f30d0d0984c0f9746763f73687975"
+}

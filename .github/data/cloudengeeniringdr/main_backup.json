@@ -1,0 +1,25 @@
+{
+    "aws": {
+        "AWS_ACCOUNT_ID": "364507823571",
+        "REGION": "us-west-2"
+    },
+    "cdk": {
+        "working_directory": "cloud.cdk.poc/cdk_backupplan_cloudengineer_dr_stack"
+    },
+    "stack_account": " ",
+    "stack_region": "us-west-2",
+    "secondary_backup_vault_arn": " ",
+    "stack_encryption_key_arn": " ", 
+    "vault_name": "Main-Cloud-DR-BackupVault",
+    "plan_name": "Cloud-DR-BackupPlan",
+    "plan_rule_name": "Cloud-DR-BackupPlan-Rule",
+    "role_arn": "arn:aws:iam::364507823571:role/service-role/AWSBackupDefaultServiceRole", 
+    "vault_iam_role": [
+        "arn:aws:iam::364507823571:role/AWSBackupCustomRole",
+        "arn:aws:iam::235712742900:role/service-role/AWSBackupDefaultServiceRole",
+        "arn:aws:iam::235712742900:role/aws-service-role/backup.amazonaws.com/AWSServiceRoleForBackup"
+    ],
+    "selection_resource_arn": " ",
+    "resource_selection_iam_role": "arn:aws:iam::364507823571:role/service-role/AWSBackupDefaultServiceRole",
+    "selection_name": "Cloud-DR-ReplicaRDS"
+}
