@@ -1,17 +1,17 @@
-name: Accounts Trigger
+# name: Accounts Trigger
 
-on:
-  workflow_call:
-    inputs:
-      json_file_path:
-        required: true
-        type: string
-      json_file:
-        required: true
-        type: string
-      gh_environment:
-        required: true
-        type: string
+# on:
+#   workflow_call:
+#     inputs:
+#       json_file_path:
+#         required: true
+#         type: string
+#       json_file:
+#         required: true
+#         type: string
+#       gh_environment:
+#         required: true
+#         type: string
 
 # Added permissions section to allow OIDC authentication
 permissions:

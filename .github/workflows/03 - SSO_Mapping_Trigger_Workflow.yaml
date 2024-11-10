@@ -1,10 +1,10 @@
-# name: Accounts_Trigger_Workflow
+name: SSO_Mapping_Trigger_Workflow
 
-# on:
-#   push:
-#     branches:
-#       - main
-#   workflow_dispatch:
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
 
 # Added permissions section to allow OIDC authentication
 permissions:
@@ -40,7 +40,7 @@ jobs:
         id: set_deployment_files
         shell: bash
         run: | 
-          echo ALPHA_FILES='["us-east-1/alpha_accounts_trigger_gh_arc_v1.0.0"]' >> $GITHUB_OUTPUT
+          echo ALPHA_FILES='["us-east-1/alpha_sso_mapping_trigger_gh_arc_v1.0.0"]' >> $GITHUB_OUTPUT
           echo BETA_FILES='[]' >> $GITHUB_OUTPUT
           echo RELEASE_FILES='[]' >> $GITHUB_OUTPUT
 
@@ -56,7 +56,7 @@ jobs:
       fail-fast: true
       matrix:
         json_file: ${{ fromJSON(needs.PROCESS_JSON_FILES.outputs.alpha_deployment_files_output) }}
-    uses: ./.github/workflows/accounts_trigger.yaml
+    uses: ./.github/workflows/sso_mapping_trigger.yaml
     with:
       json_file_path: .github/workflows/data
       json_file: ${{ matrix.json_file }}
@@ -69,7 +69,7 @@ jobs:
       fail-fast: true
       matrix:
         json_file: ${{ fromJSON(needs.PROCESS_JSON_FILES.outputs.beta_deployment_files_output) }}
-    uses: ./.github/workflows/accounts_trigger.yaml
+    uses: ./.github/workflows/sso_mapping_trigger.yaml
     with:
       json_file_path: .github/workflows/data
       json_file: ${{ matrix.json_file }}
@@ -82,7 +82,7 @@ jobs:
       fail-fast: true
       matrix:
         json_file: ${{ fromJSON(needs.PROCESS_JSON_FILES.outputs.release_deployment_files_output) }}
-    uses: ./.github/workflows/accounts_trigger.yaml
+    uses: ./.github/workflows/sso_mapping_trigger.yaml
     with:
       json_file_path: .github/workflows/data
       json_file: ${{ matrix.json_file }}
