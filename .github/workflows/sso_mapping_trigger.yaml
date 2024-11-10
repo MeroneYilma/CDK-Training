@@ -44,7 +44,7 @@ jobs:
       - name: Configure AWS used to authenticate with GitHub
         uses: ./.github/actions/global/aws_github_auth  # Correct path to your custom action
         with:
-          json_data_file: .github/data/sso-groups/Demo_Account12_sso.json  # Path to your JSON data file
+          json_data_file: .github/data/sso-groups/Demo_Account10_sso.json  # Path to your JSON data file
 
       - name: Process JSON file
         run: |
@@ -60,4 +60,4 @@ jobs:
       - name: Deploy CDK stack
         run: |
           source .env/bin/activate
-          cdk deploy AwsssoGroupMappingStack-Account-SSODemoAccount12 --app "python AWSControlTowerAccountFactory/account_creation_template/aws_sso_group_mapping_stack/app.py" -c filepath=${{ inputs.json_file_path }}/${{ inputs.json_file }} --require-approval never
+          cdk deploy AwsssoGroupMappingStack-Account-SSODemoAccount10 --app "python AWSControlTowerAccountFactory/account_creation_template/aws_sso_group_mapping_stack/app.py" -c filepath=${{ inputs.json_file_path }}/${{ inputs.json_file }} --require-approval never
