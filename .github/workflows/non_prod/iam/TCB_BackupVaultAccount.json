@@ -1,0 +1,35 @@
+{
+  "cdk": {
+    "working_directory": "lib/IaC/iam"
+  },
+  "iam_config": {
+    "iam_stack_name": "IAMStack",
+    "deploy_iam_stack": true,
+    "account_id": "235712742900",
+    "region": "us-east-1",
+    "iam": {
+      "role_name": "GitHubAction-AssumeRoleWithAction",
+      "oidc_provider_name": "token.actions.githubusercontent.com",
+      "client_id": "sts.amazonaws.com",
+      "thumbprint_list": [
+        "d89e3bd43d5d909b47a18977aa9d5ce36cee184c"
+      ],
+      "url": "https://token.actions.githubusercontent.com",
+      "github_repo": "repo:TCB-Enterprise-Cloud/KubernetesPlatform:*",
+      "managed_policy_arns": [
+        "arn:aws:iam::aws:policy/AdministratorAccess"
+      ],
+      "description": "IAM Role for authenticating to GitHub for running workflows"
+    },
+    "tags": {
+      "managed_by": "Cloud Engineering",
+      "owned_by": "Cloud Engineering",
+      "function": "Business",
+      "deployed_by": "CDK",
+      "app": "Platform Services",
+      "env": "non_prod",
+      "cost-center": "124",
+      "region": "us-east-1"
+    }
+  }
+}
