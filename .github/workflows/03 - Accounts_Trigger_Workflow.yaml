@@ -1,7 +1,5 @@
 name: Accounts_Trigger_Workflow
 
-# The 'on' section defines the events that trigger the workflow.
-# Added 'push' event to trigger the workflow on push to the 'main' branch.
 on:
   push:
     branches:
@@ -9,7 +7,6 @@ on:
   workflow_dispatch:
 
 env:
-  # Set ALPHA to True to trigger the workflow for the Alpha environment
   ALPHA: True
   BETA: False
   RELEASE: False
