@@ -36,7 +36,7 @@ jobs:
         shell: bash
         run: | 
           #echo ALPHA_FILES='["accounts/Demo_Account5", "accounts/Demo_Account9", "accounts/Demo_Account10", "accounts/Demo_Account12_sso"]' >> $GITHUB_OUTPUT
-          echo ALPHA_FILES='["sso-groups/Demo_Account5_sso", "sso-groups/Demo_Account9_sso", "sso-groups/Demo_Account10_sso", "sso-groups/Demo_Account12_sso"]' >> $GITHUB_OUTPUT
+          echo ALPHA_FILES='["sso-groups/Demo_Account5_sso", "sso-groups/Demo_Account9_sso", "sso-groups/Demo_Account10_sso"]' >> $GITHUB_OUTPUT
           echo BETA_FILES='[]' >> $GITHUB_OUTPUT
           echo RELEASE_FILES='[]' >> $GITHUB_OUTPUT
 
