@@ -3,54 +3,41 @@
 
 ## BackupVault IAM Role (make sure the us-east-1 region for the account in question is bootsraped)
 - Step 1 - `cdk bootstrap --profile BackupVault_East aws://235712742900/us-east-1`
-- Step 2 - `cdk deploy -c filepath=C:\CloudRepo\cloud.cdk.poc\.github\workflows\non_prod\iam\TCB_BackupVaultAccount.json --profile BackupVault`
+- Step 2 - `cdk deploy -c filepath=C:\CloudRepo\cloud.cdk.poc\.github\workflows\non_prod\iam\TCB_BackupVaultAccount.json --profile milu_treasury`
+- Step 3 = Verify the IAm Role Trust Relationship shows the correct repo
+    ```
+        {
+	"Version": "2012-10-17",
+	"Statement": [
+		{
+			"Effect": "Allow",
+			"Principal": {
+				"Federated": "arn:aws:iam::364507823571:oidc-provider/token.actions.githubusercontent.com"
+			},
+			"Action": "sts:AssumeRoleWithWebIdentity",
+			"Condition": {
+				"StringEquals": {
+					"token.actions.githubusercontent.com:aud": "sts.amazonaws.com"
+				},
+				"StringLike": {
+					"token.actions.githubusercontent.com:sub": "repo:TCB-Enterprise-Cloud/cloud.iac.cdk:*"
+				}
+			}
+		}
+	]
+}
 
+```
 
 This is a blank project for CDK development with Python.
 
-The `cdk.json` file tells the CDK Toolkit how to execute your app.
+npm install -g aws-cdk 
+cdk init app --language python  
+python -m venv .env  
+. .\.env\Scripts\Activate 
+pip install -r requirements.txt 
+pip install aws-cdk-lib 
 
-This project is set up like a standard Python project.  The initialization
-process also creates a virtualenv within this project, stored under the `.venv`
-directory.  To create the virtualenv it assumes that there is a `python3`
-(or `python` for Windows) executable in your path with access to the `venv`
-package. If for any reason the automatic creation of the virtualenv fails,
-you can create the virtualenv manually.
-
-To manually create a virtualenv on MacOS and Linux:
-
-```
-$ python -m venv .venv
-```
-
-After the init process completes and the virtualenv is created, you can use the following
-step to activate your virtualenv.
-
-```
-$ source .venv/bin/activate
-```
-
-If you are a Windows platform, you would activate the virtualenv like this:
-
-```
-% .venv\Scripts\activate.bat
-```
-
-Once the virtualenv is activated, you can install the required dependencies.
-
-```
-$ pip install -r requirements.txt
-```
-
-At this point you can now synthesize the CloudFormation template for this code.
-
-```
-$ cdk synth
-```
-
-To add additional dependencies, for example other CDK libraries, just add
-them to your `setup.py` file and rerun the `pip install -r requirements.txt`
-command.
 
 ## Useful commands
 

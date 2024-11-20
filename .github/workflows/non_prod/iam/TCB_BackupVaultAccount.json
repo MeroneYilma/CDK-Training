@@ -5,7 +5,7 @@
   "iam_config": {
     "iam_stack_name": "IAMStack",
     "deploy_iam_stack": true,
-    "account_id": "235712742900",
+    "account_id": "699475910968",
     "region": "us-east-1",
     "iam": {
       "role_name": "GitHubAction-AssumeRoleWithAction",
@@ -15,7 +15,7 @@
         "d89e3bd43d5d909b47a18977aa9d5ce36cee184c"
       ],
       "url": "https://token.actions.githubusercontent.com",
-      "github_repo": "repo:TCB-Enterprise-Cloud/KubernetesPlatform:*",
+      "github_repo": "repo:MeroneYilma/CDK-Training:*",
       "managed_policy_arns": [
         "arn:aws:iam::aws:policy/AdministratorAccess"
       ],

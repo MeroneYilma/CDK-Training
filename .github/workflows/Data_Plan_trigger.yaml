@@ -1,0 +1,79 @@
+# name: Data Plan Trigger
+
+# on:
+#   workflow_call:
+#     inputs:
+#       json_file_path:
+#         required: true
+#         type: string
+#       json_file:
+#         required: true
+#         type: string
+#       gh_environment:
+#         required: true
+#         type: string
+
+# Added permissions section to allow OIDC authentication
+permissions:
+  id-token: write  # Allows the workflow to request an OIDC token
+  contents: read
+
+jobs:
+  trigger_workflow:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Install AWS CDK
+        run: npm install -g aws-cdk
+
+      - name: Set up Python virtual environment
+        run: python -m venv .env
+
+      - name: Install dependencies
+        run: |
+          source .env/bin/activate
+          pip install aws-cdk-lib
+
+      - name: Configure AWS used to authenticate with GitHub
+        uses: ./.github/actions/global/aws_github_auth  # Correct path to your custom action
+        with:
+          json_data_file: .github/data/dataplatform/main_backup.json  # Path to your JSON data file
+
+      - name: Process JSON file
+        run: |
+          source .env/bin/activate
+          echo "Processing JSON file: ${{ inputs.json_file_path }}/${{ inputs.json_file }}"
+          echo "Environment: ${{ inputs.gh_environment }}"
+
+      - name: Synthesize CDK app
+        run: |
+          source .env/bin/activate
+          cdk synth --app "python iac/DataPlatform_Backup/cdk_backupplan_dataplatform_stack/app.py" -c filepath=${{ inputs.json_file_path }}/${{ inputs.json_file }}
+
+      - name: Deploy CDK stack
+        run: |
+          source .env/bin/activate
+          cdk deploy CdkBackupplanDataPlatformStack --app "python iac/DataPlatform_Backup/cdk_backupplan_dataplatform_stack/app.py" -c filepath=${{ inputs.json_file_path }}/${{ inputs.json_file }} --require-approval never
+
+      # Additional steps for the second JSON file and CDK stack
+      - name: Configure AWS used to authenticate with GitHub for second stack
+        uses: ./.github/actions/global/aws_github_auth  # Correct path to your custom action
+        with:
+          json_data_file: .github/data/dataplatform/backup_plan_2.json  # Path to your second JSON data file
+
+      - name: Synthesize second CDK app
+        run: |
+          source .env/bin/activate
+          cdk synth --app "python iac/DataPlatform_Backup/cdk_backupplan_dataplatform_stack2/app.py" -c filepath=${{ inputs.json_file_path }}/${{ inputs.json_file }}
+
+      - name: Deploy second CDK stack
+        run: |
+          source .env/bin/activate
+          cdk deploy CdkBackupplanDataPlatformStack2 --app "python iac/DataPlatform_Backup/cdk_backupplan_dataplatform_stack2/app.py" -c filepath=${{ inputs.json_file_path }}/${{ inputs.json_file }} --require-approval never

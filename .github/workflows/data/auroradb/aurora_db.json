@@ -1,0 +1,84 @@
+{
+    "AuroraGlobalDbStack": {
+      "vpc": {
+        "max_azs": 2
+      },
+      "kms_key": {
+        "primary_kms_key": "arn:aws:kms:us-east-1:964136190063:key/8c67ec55-c1a6-4f3b-8c04-e8123229a828"
+      },
+      "secrets": {
+        "primary_master_secret": "PrimaryAuroraMaster",
+        "secondary_master_secret": "SecondaryAuroraMasterSecret"
+      },
+      "global_cluster": {
+        "global_cluster_identifier": "your-global-cluster-identifier",
+        "engine": "aurora-postgresql"
+      },
+      "primary_cluster": {
+        "engine_version": "VER_14_7",
+        "writer_instance_type": "BURSTABLE3.MEDIUM",
+        "reader_instance_type": "BURSTABLE3.MEDIUM",
+        "primary_instance_count": 2,
+        "parameter_group_name": "default.aurora-postgresql14",
+        "removal_policy": "DESTROY"
+      },
+      "secondary_cluster": {
+        "engine_version": "VER_14_7",
+        "writer_instance_type": "BURSTABLE3.MEDIUM",
+        "reader_instance_type": "BURSTABLE3.MEDIUM",
+        "secondary_instance_count": 2,
+        "parameter_group_name": "default.aurora-postgresql14",
+        "removal_policy": "DESTROY"
+      },
+      "log_group": {
+        "retention": "ONE_WEEK"
+      },
+      "proxy_role": {
+        "assumed_by": "rds.amazonaws.com"
+      },
+      "db_proxy": {
+        "iam_auth": true
+      },
+      "subnet_groups": {
+        "primary_subnet_group": {
+          "description": "Primary Subnet Group",
+          "removal_policy": "DESTROY"
+        },
+        "secondary_subnet_group": {
+          "description": "Secondary Subnet Group",
+          "removal_policy": "DESTROY"
+        }
+      },
+      "parameter_groups": {
+        "primary_cluster_param_group": {
+          "engine_version": "VER_14_7",
+          "parameters": {
+            "parameter_name": "parameter_value"
+          }
+        },
+        "secondary_cluster_param_group": {
+          "engine_version": "VER_14_7",
+          "parameters": {
+            "parameter_name": "parameter_value"
+          }
+        }
+      },
+      "outputs": {
+        "GlobalClusterArn": "global-cluster-arn",
+        "PrimaryClusterArn": "primary-cluster-arn",
+        "SecondaryClusterArn": "secondary-cluster-arn"
+      }
+    },
+    "SecretsStack": {
+      "primary_master_secret": {
+        "username": "postgres",
+        "generate_string_key": "password",
+        "exclude_punctuation": true
+      },
+      "secondary_master_secret": {
+        "username": "postgres",
+        "generate_string_key": "password",
+        "exclude_punctuation": true
+      }
+    }
+  }
