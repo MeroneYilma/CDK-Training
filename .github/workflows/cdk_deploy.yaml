@@ -64,6 +64,11 @@ jobs:
         run: pip install -r requirements.txt
         working-directory: ${{ steps.cdk_directory.outputs.working_directory_output }}
 
+      - name: Print Filepath
+        # Print the filepath to debug the path being accessed
+        run: echo "Filepath: ../../../../${{ inputs.json_file_path }}/${{ inputs.json_file }}.json"
+        working-directory: ${{ steps.cdk_directory.outputs.working_directory_output }}
+
       - name: CDK Deploy
         # Deploy using the CDK in the specified working directory
         run: cdk deploy -c filepath=../../../../${{ inputs.json_file_path }}/${{ inputs.json_file }}.json --all 
