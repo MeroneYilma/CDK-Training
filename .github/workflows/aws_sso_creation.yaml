@@ -7,6 +7,10 @@ env:
   BETA: False
   RELEASE: False
 
+permissions:
+  id-token: write
+  contents: write
+
 jobs:
   SELECT_ENVIRONMENT:
     runs-on: ubuntu-latest
@@ -48,7 +52,7 @@ jobs:
       fail-fast: true
       matrix:
         json_file: ${{ fromJSON(needs.PROCESS_JSON_FILES.outputs.alpha_deployment_files_output) }}
-    uses: MeroneYilma/CDK-Training/.github/workflows/cdk_deploy.yaml@main
+    uses: MeroneYilma/CDK-Training/.github/workflows/cdk_deploy.yaml@alpha
     with:
       json_file_path: .github/workflows/data
       json_file: ${{ matrix.json_file }}
@@ -61,7 +65,7 @@ jobs:
       fail-fast: true
       matrix:
         json_file: ${{ fromJSON(needs.PROCESS_JSON_FILES.outputs.beta_deployment_files_output) }}
-    uses: MeroneYilma/CDK-Training/.github/workflows/cdk_deploy.yaml@main
+    uses: MeroneYilma/CDK-Training/.github/workflows/cdk_deploy.yaml@alpha
     with:
       json_file_path: .github/workflows/data
       json_file: ${{ matrix.json_file }}
@@ -74,7 +78,7 @@ jobs:
       fail-fast: true
       matrix:
         json_file: ${{ fromJSON(needs.PROCESS_JSON_FILES.outputs.release_deployment_files_output) }}
-    uses: MeroneYilma/CDK-Training/.github/workflows/cdk_deploy.yaml@main
+    uses: MeroneYilma/CDK-Training/.github/workflows/cdk_deploy.yaml@alpha
     with:
       json_file_path: .github/workflows/data
       json_file: ${{ matrix.json_file }}
