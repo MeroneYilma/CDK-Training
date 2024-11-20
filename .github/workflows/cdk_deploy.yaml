@@ -26,6 +26,13 @@ jobs:
     steps:
       - name: Git clone the repository
         uses: actions/checkout@v4
+        with:
+          submodules: true # Ensure submodules are initialized and updated
+
+      - name: Initialize and update submodules
+        run: |
+          git submodule init
+          git submodule update
 
       - name: List repository contents
         # List the contents of the repository to verify the directory structure
@@ -35,8 +42,8 @@ jobs:
         # List the contents of the lib directory to verify the directory structure
         run: ls -al lib
 
-      - name: List iac directory contents
-        # List the contents of the iac directory to verify the directory structure
+      - name: List Iac directory contents
+        # List the contents of the Iac directory to verify the directory structure
         run: ls -al lib/Iac
 
       - name: Use AWS Configure Custom Action
