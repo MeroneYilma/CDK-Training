@@ -37,7 +37,7 @@ jobs:
 
       - name: List iac directory contents
         # List the contents of the iac directory to verify the directory structure
-        run: ls -al lib/iac
+        run: ls -al lib/Iac
 
       - name: Use AWS Configure Custom Action
         id: aws_configure
