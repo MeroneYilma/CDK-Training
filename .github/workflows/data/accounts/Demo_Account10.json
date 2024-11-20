@@ -1,0 +1,19 @@
+{
+    "aws": {
+        "AWS_ACCOUNT_ID": "209479296537",
+        "GITHUB_OIDC_IAM_ROLE": "GitHubAction-AssumeRoleWithAction",
+        "REGION": "us-east-1"
+    },
+    "cdk": {
+        "working_directory": "lib/IaC/aws_control_tower_account_factory_stack"
+    },
+    "account_config": {
+    "AccountId": "",
+    "AccountEmail": "jacobdag0408+DemoAccount10@gmail.com",
+    "AccountName": "Demo_Account10",
+    "ManagedOrganizationalUnit": "Prod (ou-jw9q-k5tw4sb3)",
+    "SSOUserEmail": "meroneyilma37@gmail.com",
+    "SSOUserFirstName": "Merone",
+    "SSOUserLastName": "Yilma"
+    }
+}

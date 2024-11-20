@@ -5,8 +5,8 @@ from cdk_backupplan_dataplatform_stack import CdkBackupplanDataPlatformStack
 from cdk_backupplan_dataplatform_stack2 import CdkBackupplanDataPlatformStack2
 from secondarybackup_dataplatform_vault_stack import SecondarybackupDataPlaformVaultStack
 
-# Define the path to the data folder
-data_path = Path(__file__).parents[3] / '.github/data/dataplatform'
+# Define the path to the data folder ### In the treasury account
+data_path = Path(__file__).parents[2] / '.github/data/dataplatform'
 
 # Load JSON configurations
 def load_config(file_name):

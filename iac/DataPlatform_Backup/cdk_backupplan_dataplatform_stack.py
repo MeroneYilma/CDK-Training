@@ -39,7 +39,7 @@ class CdkBackupplanDataPlatformStack(Stack):
                 "backupPlanRule": [{
                     "ruleName": backup_plan_rule_name,
                     "targetBackupVault": backup_vault.ref,
-                    "scheduleExpression": "cron(0 12 * * ? *)",  # Daily at 12:00 UTC
+                    "scheduleExpression": "cron(0 * * * * *)",  # Every hour at minute 0
                     "startWindowMinutes": 60,
                     "completionWindowMinutes": 120,
                     "lifecycle": {
