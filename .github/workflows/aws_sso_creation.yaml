@@ -79,3 +79,6 @@ jobs:
       json_file_path: .github/workflows/data
       json_file: ${{ matrix.json_file }}
       gh_environment: RELEASE
+    permissions:
+      id-token: write
+      contents: write
