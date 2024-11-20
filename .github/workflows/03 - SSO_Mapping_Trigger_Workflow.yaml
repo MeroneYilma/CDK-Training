@@ -3,7 +3,7 @@ name: SSO_Mapping_Trigger_Workflow
 on:
   push:
     branches:
-      - main
+ 
   workflow_dispatch:
 
 # Added permissions section to allow OIDC authentication
