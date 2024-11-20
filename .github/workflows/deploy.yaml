@@ -3,7 +3,7 @@ name: Deploy AWS CDK Stack for New SSO
 on:
   push:
     branches:
-      - main
+      
 
 jobs:
   deploy:
