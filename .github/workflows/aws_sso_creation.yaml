@@ -7,6 +7,10 @@ env:
   BETA: False
   RELEASE: False
 
+permissions:
+  contents: write
+  id-token: write
+
 jobs:
   SELECT_ENVIRONMENT:
     runs-on: ubuntu-latest
