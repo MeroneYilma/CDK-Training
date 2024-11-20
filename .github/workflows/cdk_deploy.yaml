@@ -29,13 +29,13 @@ jobs:
 
       - name: Use AWS Configure Custom Action
         id: aws_configure
-        uses: MeroneYilma/CDK-Training/.github/actions/global/aws_github_auth@main
+        uses: MeroneYilma/CDK-Training/.github/actions/global/aws_github_auth@alpha
         with: 
           json_data_file: "./${{ inputs.json_file_path }}/${{ inputs.json_file }}.json"
 
       - name: Use AWS CDK Working Directory Custom Action
         id: cdk_directory
-        uses: MeroneYilma/CDK-Training/.github/actions/global/cdk_directory@main
+        uses: MeroneYilma/CDK-Training/.github/actions/global/cdk_directory@alpha
         with: 
           json_data_file: "./${{ inputs.json_file_path }}/${{ inputs.json_file }}.json"
 
