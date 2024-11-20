@@ -27,18 +27,6 @@ jobs:
       - name: Git clone the repository
         uses: actions/checkout@v4
 
-      - name: List repository contents
-        # List the contents of the repository to verify the directory structure
-        run: ls -al
-
-      - name: List lib directory contents
-        # List the contents of the lib directory to verify the directory structure
-        run: ls -al lib
-
-      - name: List Iac directory contents
-        # List the contents of the Iac directory to verify the directory structure
-        run: ls -al lib/Iac
-
       - name: Use AWS Configure Custom Action
         id: aws_configure
         uses: MeroneYilma/CDK-Training/.github/actions/global/aws_github_auth@alpha
@@ -51,25 +39,14 @@ jobs:
         with: 
           json_data_file: "./${{ inputs.json_file_path }}/${{ inputs.json_file }}.json"
 
-      - name: List directory contents
-        # List the contents of the working directory to verify it exists
-        run: ls -al ${{ steps.cdk_directory.outputs.working_directory_output }}
-
       - name: Install AWS CDK
         run: |
           npm install -g aws-cdk
 
       - name: Install Requirements 
-        # Install the requirements in the specified working directory
-        run: pip install -r requirements.txt
-        working-directory: ${{ steps.cdk_directory.outputs.working_directory_output }}
-
-      - name: Print Filepath
-        # Print the filepath to debug the path being accessed
-        run: echo "Filepath: ../../../../${{ inputs.json_file_path }}/${{ inputs.json_file }}.json"
+        run: 'pip install -r requirements.txt'
         working-directory: ${{ steps.cdk_directory.outputs.working_directory_output }}
 
       - name: CDK Deploy
-        # Deploy using the CDK in the specified working directory
         run: cdk deploy -c filepath=../../../../${{ inputs.json_file_path }}/${{ inputs.json_file }}.json --all 
         working-directory: ${{ steps.cdk_directory.outputs.working_directory_output }}
