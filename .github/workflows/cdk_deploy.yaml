@@ -27,6 +27,10 @@ jobs:
       - name: Git clone the repository
         uses: actions/checkout@v4
 
+      - name: List repository contents
+        # List the contents of the repository to verify the directory structure
+        run: ls -al
+        
       - name: Use AWS Configure Custom Action
         id: aws_configure
         uses: MeroneYilma/CDK-Training/.github/actions/global/aws_github_auth@alpha
