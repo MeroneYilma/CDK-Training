@@ -26,13 +26,6 @@ jobs:
     steps:
       - name: Git clone the repository
         uses: actions/checkout@v4
-        with:
-          submodules: true # Ensure submodules are initialized and updated
-
-      - name: Initialize and update submodules
-        run: |
-          git submodule init
-          git submodule update
 
       - name: List repository contents
         # List the contents of the repository to verify the directory structure
