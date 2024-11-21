@@ -51,6 +51,8 @@ jobs:
         run: |
           # Set the relative file path
           FILE_PATH="../../../../.github/workflows/data/sso-groups/${{ inputs.json_file }}.json"
+          # Debugging line to print the file path
+          echo "Checking file path: $FILE_PATH"
           # Check if the file exists
           if [ ! -f "$FILE_PATH" ]; then
             echo "File not found: $FILE_PATH"
