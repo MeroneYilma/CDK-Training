@@ -36,8 +36,8 @@ jobs:
         id: set_deployment_files
         shell: bash
         run: | 
-          echo ALPHA_FILES='["accounts/Demo_Account5", "accounts/Demo_Account10"]' >> $GITHUB_ENV
-          echo ALPHA_FILES='["sso-groups/Demo_Account9_sso.json", "sso-groups/Demo_Account10_sso.json", "sso-groups/Demo_Account11_sso.json", "sso-groups/Demo_Account12_sso.json"]' >> $GITHUB_ENV
+          echo ALPHA_FILES='["accounts/Demo_Account22", "accounts/Demo_Account24"]' >> $GITHUB_ENV
+          #echo ALPHA_FILES='["sso-groups/Demo_Account9_sso.json", "sso-groups/Demo_Account10_sso.json", "sso-groups/Demo_Account11_sso.json", "sso-groups/Demo_Account12_sso.json"]' >> $GITHUB_ENV
           echo BETA_FILES='[]' >> $GITHUB_OUTPUT
           echo RELEASE_FILES='[]' >> $GITHUB_OUTPUT
     outputs: 
