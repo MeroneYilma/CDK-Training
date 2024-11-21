@@ -34,12 +34,6 @@ jobs:
           echo "json_file: ${{ inputs.json_file }}"
           echo "gh_environment: ${{ inputs.gh_environment }}"
 
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          role-to-assume: arn:aws:iam::209479296537:role/GitHubAction-AssumeRoleWithAction
-          aws-region: us-east-1
-
       - name: Use AWS Configure Custom Action
         id: aws_configure
         uses: MeroneYilma/CDK-Training/.github/actions/global/aws_github_auth@alpha
