@@ -34,6 +34,12 @@ jobs:
           echo "json_file: ${{ inputs.json_file }}"
           echo "gh_environment: ${{ inputs.gh_environment }}"
 
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: arn:aws:iam::209479296537:role/GitHubAction-AssumeRoleWithAction
+          aws-region: us-east-1
+
       - name: Use AWS Configure Custom Action
         id: aws_configure
         uses: MeroneYilma/CDK-Training/.github/actions/global/aws_github_auth@alpha
@@ -58,9 +64,9 @@ jobs:
         run: ls -al ../../../${{ inputs.json_file_path }}/
         working-directory: ${{ steps.cdk_directory.outputs.working_directory_output }}
 
-      - name: Synthesize CDK App
-        run: cdk synth -c filepath=../../../${{ inputs.json_file_path }}/${{ inputs.json_file }}.json
-        working-directory: ${{ steps.cdk_directory.outputs.working_directory_output }}
+      - name: Wait for CloudFormation stack to be stable
+        run: |
+          aws cloudformation wait stack-update-complete --stack-name AWSControlTowerAccountFactoryStack
 
       - name: CDK Deploy
         run: cdk deploy -c filepath=../../../${{ inputs.json_file_path }}/${{ inputs.json_file }}.json --all --require-approval never
