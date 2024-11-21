@@ -72,12 +72,14 @@ jobs:
       fail-fast: true
       matrix:
         json_file: ${{ fromJSON(needs.PROCESS_JSON_FILES.outputs.alpha_deployment_files_output) }}
-    uses: MeroneYilma/CDK-Training/.github/workflows/cdk_deploy.yaml@alpha
-    with:
-      json_file_path: .github/workflows/data
-      json_file: ${{ matrix.json_file }}
-      gh_environment: ALPHA
-      stack_name: ${{ needs.SET_STACK_NAME_ALPHA.outputs.stack_name }}
+    steps:
+      - name: CDK Deploy
+        uses: MeroneYilma/CDK-Training/.github/workflows/cdk_deploy.yaml@alpha
+        with:
+          json_file_path: .github/workflows/data
+          json_file: ${{ matrix.json_file }}
+          gh_environment: ALPHA
+          stack_name: ${{ needs.SET_STACK_NAME_ALPHA.outputs.stack_name }}
 
   SET_STACK_NAME_BETA:
     needs: [SELECT_ENVIRONMENT, PROCESS_JSON_FILES]
@@ -107,12 +109,14 @@ jobs:
       fail-fast: true
       matrix:
         json_file: ${{ fromJSON(needs.PROCESS_JSON_FILES.outputs.beta_deployment_files_output) }}
-    uses: MeroneYilma/CDK-Training/.github/workflows/cdk_deploy.yaml@alpha
-    with:
-      json_file_path: .github/workflows/data
-      json_file: ${{ matrix.json_file }}
-      gh_environment: BETA
-      stack_name: ${{ needs.SET_STACK_NAME_BETA.outputs.stack_name }}
+    steps:
+      - name: CDK Deploy
+        uses: MeroneYilma/CDK-Training/.github/workflows/cdk_deploy.yaml@alpha
+        with:
+          json_file_path: .github/workflows/data
+          json_file: ${{ matrix.json_file }}
+          gh_environment: BETA
+          stack_name: ${{ needs.SET_STACK_NAME_BETA.outputs.stack_name }}
 
   SET_STACK_NAME_RELEASE:
     needs: [SELECT_ENVIRONMENT, PROCESS_JSON_FILES]
@@ -142,9 +146,11 @@ jobs:
       fail-fast: true
       matrix:
         json_file: ${{ fromJSON(needs.PROCESS_JSON_FILES.outputs.release_deployment_files_output) }}
-    uses: MeroneYilma/CDK-Training/.github/workflows/cdk_deploy.yaml@alpha
-    with:
-      json_file_path: .github/workflows/data
-      json_file: ${{ matrix.json_file }}
-      gh_environment: RELEASE
-      stack_name: ${{ needs.SET_STACK_NAME_RELEASE.outputs.stack_name }}
+    steps:
+      - name: CDK Deploy
+        uses: MeroneYilma/CDK-Training/.github/workflows/cdk_deploy.yaml@alpha
+        with:
+          json_file_path: .github/workflows/data
+          json_file: ${{ matrix.json_file }}
+          gh_environment: RELEASE
+          stack_name: ${{ needs.SET_STACK_NAME_RELEASE.outputs.stack_name }}
