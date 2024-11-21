@@ -35,9 +35,9 @@ jobs:
         shell: bash
         run: | 
           # echo ALPHA_FILES='["accounts/Demo_Account5", "accounts/Demo_Account9", "accounts/Demo_Account10", "accounts/Demo_Account12"]' >> $GITHUB_OUTPUT
-          echo 'ALPHA_FILES='["sso-groups/Demo_Account9_sso", "sso-groups/Demo_Account10_sso", "sso-groups/Demo_Account12_sso"]' >> $GITHUB_OUTPUT
-          echo 'BETA_FILES=[]' >> $GITHUB_OUTPUT
-          echo 'RELEASE_FILES=[]' >> $GITHUB_OUTPUT
+          echo ALPHA_FILES='["sso-groups/Demo_Account9_sso", "sso-groups/Demo_Account10_sso", "sso-groups/Demo_Account12_sso"]' >> $GITHUB_OUTPUT
+          echo BETA_FILES='[]' >> $GITHUB_OUTPUT
+          echo RELEASE_FILES='[]' >> $GITHUB_OUTPUT
     outputs: 
       alpha_deployment_files_output: ${{ steps.set_deployment_files.outputs.ALPHA_FILES }}
       beta_deployment_files_output: ${{ steps.set_deployment_files.outputs.BETA_FILES }}
@@ -82,4 +82,43 @@ jobs:
       json_file: ${{ matrix.json_file }}
       gh_environment: RELEASE
 
- 
+  VALIDATE_TEMPLATE:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate CloudFormation Template
+        run: |
+          aws cloudformation validate-template --template-body file://path/to/your/template.yaml
+        env:
+          AWS_DEFAULT_REGION: us-east-1
+          AWS_REGION: us-east-1
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
+
+  DEPLOY_STACK:
+    needs: [VALIDATE_TEMPLATE]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy CloudFormation Stack
+        run: |
+          echo "Deploying CloudFormation stack..."
+          aws cloudformation deploy --stack-name AwsSSOGroupMappingStack --template-file path/to/your/template.yaml --capabilities CAPABILITY_NAMED_IAM
+          echo "Waiting for stack update or creation to complete..."
+          aws cloudformation wait stack-update-complete --stack-name AwsSSOGroupMappingStack || aws cloudformation wait stack-create-complete --stack-name AwsSSOGroupMappingStack
+        env:
+          AWS_DEFAULT_REGION: us-east-1
+          AWS_REGION: us-east-1
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
+
+      - name: Check CloudFormation stack status
+        run: |
+          echo "Checking CloudFormation stack status..."
+          aws cloudformation describe-stacks --stack-name AwsSSOGroupMappingStack
+        env:
+          AWS_DEFAULT_REGION: us-east-1
+          AWS_REGION: us-east-1
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
