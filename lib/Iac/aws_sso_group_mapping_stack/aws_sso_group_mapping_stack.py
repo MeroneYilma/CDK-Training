@@ -52,15 +52,19 @@ class AwsSSOGroupMappingStack(Stack):
                 if not self._is_valid_group_id(group_id):
                     raise ValueError(f"Invalid SSO group ID: {group_id}")
                 validated_group_ids.add(group_id)
-            sso.CfnAssignment(
-                self, f"{group_name}-{account_id}",
-                instance_arn=sso_instance_arn,
-                target_id=account_id,
-                target_type="AWS_ACCOUNT",
-                principal_id=group_id,
-                principal_type="GROUP",
-                permission_set_arn=permission_set_arn
-            )
+            
+            try:
+                sso.CfnAssignment(
+                    self, f"{group_name}-{account_id}",
+                    instance_arn=sso_instance_arn,
+                    target_id=account_id,
+                    target_type="AWS_ACCOUNT",
+                    principal_id=group_id,
+                    principal_type="GROUP",
+                    permission_set_arn=permission_set_arn
+                )
+            except Exception as e:
+                print(f"Error creating assignment for group {group_name}: {e}")
 
     def _is_valid_group_id(self, group_id: str) -> bool:
         # Adjusted pattern to match the provided group IDs
