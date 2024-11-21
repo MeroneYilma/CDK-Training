@@ -1,93 +1,68 @@
-name: 04 - AWS Account Creation and SSO Mapping CDK Deploy Trigger Workflow
-on:
-  workflow_dispatch:
-
-env:
-  ALPHA: true
-  BETA: false
-  RELEASE: false
-
-permissions:
-  contents: write
-  id-token: write
-
-jobs:
-  SELECT_ENVIRONMENT:
+name: CDK Deploy Workflow
+on:   
+  workflow_call: 
+    inputs:
+      json_file_path:
+        description: 'Specifies the JSON file path.'
+        required: true
+        type: string
+      json_file:
+        description: 'Specifies the JSON Data file.'
+        required: true
+        type: string
+      gh_environment:
+        description: 'Specifies the GitHub deployment environment.'
+        required: true
+        type: string
+        
+jobs:    
+  CDK_DEPLOY: 
     runs-on: ubuntu-latest
+    environment: ${{ inputs.gh_environment }}
+    permissions:
+      id-token: write # This is required for requesting the JWT
+      contents: write # This is required for actions/checkout 
+
     steps:
-      - name: Set Environment
-        id: set-env
+      - name: Git clone the repository
+        uses: actions/checkout@v4
+
+      - name: Print inputs for debugging
         run: |
-          echo "ALPHA=${{ env.ALPHA }}" >> $GITHUB_ENV
-          echo "BETA=${{ env.BETA }}" >> $GITHUB_ENV
-          echo "RELEASE=${{ env.RELEASE }}" >> $GITHUB_ENV
-    outputs:
-      ALPHA: ${{ env.ALPHA }}
-      BETA: ${{ env.BETA }}
-      RELEASE: ${{ env.RELEASE }}
+          echo "json_file_path: ${{ inputs.json_file_path }}"
+          echo "json_file: ${{ inputs.json_file }}"
+          echo "gh_environment: ${{ inputs.gh_environment }}"
 
-  PROCESS_JSON_FILES:
-    needs: [SELECT_ENVIRONMENT]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Set Deployment related JSON Files
-        id: set_deployment_files
-        shell: bash
-        run: | 
-          # echo ALPHA_FILES='["accounts/Demo_Account5", "accounts/Demo_Account9", "accounts/Demo_Account10", "accounts/Demo_Account12"]' >> $GITHUB_OUTPUT
-          echo 'ALPHA_FILES=["sso-groups/Demo_Account5_sso", "sso-groups/Demo_Account9_sso", "sso-groups/Demo_Account10_sso", "sso-groups/Demo_Account12_sso"]' >> $GITHUB_OUTPUT
-          echo 'BETA_FILES=[]' >> $GITHUB_OUTPUT
-          echo 'RELEASE_FILES=[]' >> $GITHUB_OUTPUT
-    outputs: 
-      alpha_deployment_files_output: ${{ steps.set_deployment_files.outputs.ALPHA_FILES }}
-      beta_deployment_files_output: ${{ steps.set_deployment_files.outputs.BETA_FILES }}
-      release_deployment_files_output: ${{ steps.set_deployment_files.outputs.RELEASE_FILES }}
+      - name: Use AWS Configure Custom Action
+        id: aws_configure
+        uses: MeroneYilma/CDK-Training/.github/actions/global/aws_github_auth@alpha
+        with: 
+          json_data_file: "./${{ inputs.json_file_path }}/${{ inputs.json_file }}.json"
 
-  ALPHA:
-    needs: [SELECT_ENVIRONMENT, PROCESS_JSON_FILES]
-    if: ${{ needs.SELECT_ENVIRONMENT.outputs.ALPHA == 'true' }}
-    strategy:
-      fail-fast: true
-      matrix:
-        json_file: ${{ fromJSON(needs.PROCESS_JSON_FILES.outputs.alpha_deployment_files_output) }}
-    uses: MeroneYilma/CDK-Training/.github/workflows/cdk_deploy.yaml@alpha
-    with:
-      json_file_path: .github/workflows/data
-      json_file: ${{ matrix.json_file }}
-      gh_environment: ALPHA
+      - name: Use AWS CDK Working Directory Custom Action
+        id: cdk_directory
+        uses: MeroneYilma/CDK-Training/.github/actions/global/cdk_directory@alpha
+        with: 
+          json_data_file: "./${{ inputs.json_file_path }}/${{ inputs.json_file }}.json"
 
-  BETA:
-    needs: [SELECT_ENVIRONMENT, PROCESS_JSON_FILES]
-    if: ${{ needs.SELECT_ENVIRONMENT.outputs.BETA == 'true' }}
-    strategy:
-      fail-fast: true
-      matrix:
-        json_file: ${{ fromJSON(needs.PROCESS_JSON_FILES.outputs.beta_deployment_files_output) }}
-    uses: MeroneYilma/CDK-Training/.github/workflows/cdk_deploy.yaml@alpha
-    with:
-      json_file_path: .github/workflows/data
-      json_file: ${{ matrix.json_file }}
-      gh_environment: BETA
-
-  RELEASE:
-    needs: [SELECT_ENVIRONMENT, PROCESS_JSON_FILES]
-    if: ${{ needs.SELECT_ENVIRONMENT.outputs.RELEASE == 'true' }}
-    strategy:
-      fail-fast: true
-      matrix:
-        json_file: ${{ fromJSON(needs.PROCESS_JSON_FILES.outputs.release_deployment_files_output) }}
-    uses: MeroneYilma/CDK-Training/.github/workflows/cdk_deploy.yaml@alpha
-    with:
-      json_file_path: .github/workflows/data
-      json_file: ${{ matrix.json_file }}
-      gh_environment: RELEASE
-
-  VALIDATE_TEMPLATE:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Validate CloudFormation Template
+      - name: Install AWS CDK
         run: |
-          aws cloudformation validate-template --template-body file://path/to/your/template.yaml
+          npm install -g aws-cdk
+
+      - name: Install Requirements 
+        run: 'pip install -r requirements.txt'
+        working-directory: ${{ steps.cdk_directory.outputs.working_directory_output }}
+
+      - name: List files for debugging
+        run: ls -al ../../../${{ inputs.json_file_path }}/
+        working-directory: ${{ steps.cdk_directory.outputs.working_directory_output }}
+
+      - name: Check CloudFormation stack status
+        id: check_stack_status
+        run: |
+          STACK_STATUS=$(aws cloudformation describe-stacks --stack-name AwsSSOGroupMappingStack --query "Stacks[0].StackStatus" --output text)
+          echo "Stack status: $STACK_STATUS"
+          echo "STACK_STATUS=$STACK_STATUS" >> $GITHUB_ENV
         env:
           AWS_DEFAULT_REGION: us-east-1
           AWS_REGION: us-east-1
@@ -95,16 +70,20 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
 
-  DEPLOY_STACK:
-    needs: [VALIDATE_TEMPLATE]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Deploy CloudFormation Stack
+      - name: Wait for CloudFormation stack to be stable
+        if: env.STACK_STATUS != 'CREATE_COMPLETE' && env.STACK_STATUS != 'UPDATE_COMPLETE'
         run: |
-          echo "Deploying CloudFormation stack..."
-          aws cloudformation deploy --stack-name AwsSSOGroupMappingStack --template-file path/to/your/template.yaml --capabilities CAPABILITY_NAMED_IAM
-          echo "Waiting for stack update or creation to complete..."
           aws cloudformation wait stack-update-complete --stack-name AwsSSOGroupMappingStack || aws cloudformation wait stack-create-complete --stack-name AwsSSOGroupMappingStack
+        env:
+          AWS_DEFAULT_REGION: us-east-1
+          AWS_REGION: us-east-1
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
+
+      - name: CDK Deploy
+        run: cdk deploy -c filepath=../../../${{ inputs.json_file_path }}/${{ inputs.json_file }}.json --all --require-approval never
+        working-directory: ${{ steps.cdk_directory.outputs.working_directory_output }}
         env:
           AWS_DEFAULT_REGION: us-east-1
           AWS_REGION: us-east-1
