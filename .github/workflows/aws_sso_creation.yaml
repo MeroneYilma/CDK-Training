@@ -40,28 +40,48 @@ jobs:
           echo BETA_FILES='[]' >> $GITHUB_OUTPUT
           echo RELEASE_FILES='[]' >> $GITHUB_OUTPUT
 
+      - name: Check and Set Default JSON Files for ALPHA
+        id: check-alpha-json
+        run: |
+          if [ -z "${{ steps.set_deployment_files.outputs.ALPHA_FILES }}" ]; then
+            echo '[]' > alpha_files.json
+          else
+            echo '${{ steps.set_deployment_files.outputs.ALPHA_FILES }}' > alpha_files.json
+          fi
+        shell: bash
+
+      - name: Check and Set Default JSON Files for BETA
+        id: check-beta-json
+        run: |
+          if [ -z "${{ steps.set_deployment_files.outputs.BETA_FILES }}" ]; then
+            echo '[]' > beta_files.json
+          else
+            echo '${{ steps.set_deployment_files.outputs.BETA_FILES }}' > beta_files.json
+          fi
+        shell: bash
+
+      - name: Check and Set Default JSON Files for RELEASE
+        id: check-release-json
+        run: |
+          if [ -z "${{ steps.set_deployment_files.outputs.RELEASE_FILES }}" ]; then
+            echo '[]' > release_files.json
+          else
+            echo '${{ steps.set_deployment_files.outputs.RELEASE_FILES }}' > release_files.json
+          fi
+        shell: bash
+
     outputs: 
-      alpha_deployment_files_output: ${{ steps.set_deployment_files.outputs.ALPHA_FILES }}
-      beta_deployment_files_output: ${{ steps.set_deployment_files.outputs.BETA_FILES }}
-      release_deployment_files_output: ${{ steps.set_deployment_files.outputs.RELEASE_FILES }}
+      alpha_deployment_files_output: ${{ steps.check-alpha-json.outputs.alpha_files.json }}
+      beta_deployment_files_output: ${{ steps.check-beta-json.outputs.beta_files.json }}
+      release_deployment_files_output: ${{ steps.check-release-json.outputs.release_files.json }}
 
   ALPHA:
     needs: [SELECT_ENVIRONMENT, PROCESS_JSON_FILES]
     if: needs.SELECT_ENVIRONMENT.outputs.ALPHA == 'True'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check and Set Default JSON Files
-        id: check-json
-        run: |
-          if [ -z "${{ needs.PROCESS_JSON_FILES.outputs.alpha_deployment_files_output }}" ]; then
-            echo '[]' > alpha_files.json
-          else
-            echo '${{ needs.PROCESS_JSON_FILES.outputs.alpha_deployment_files_output }}' > alpha_files.json
-          fi
     strategy:
       fail-fast: true
       matrix:
-        json_file: ${{ fromJSON(steps.check-json.outputs.alpha_files.json) }}
+        json_file: ${{ fromJSON(needs.PROCESS_JSON_FILES.outputs.alpha_deployment_files_output) }}
     uses: MeroneYilma/CDK-Training/.github/workflows/cdk_deploy.yaml@alpha
     with:
       json_file_path: .github/workflows/data
@@ -71,20 +91,10 @@ jobs:
   BETA:
     needs: [SELECT_ENVIRONMENT, PROCESS_JSON_FILES]
     if: needs.SELECT_ENVIRONMENT.outputs.BETA == 'True'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check and Set Default JSON Files
-        id: check-json
-        run: |
-          if [ -z "${{ needs.PROCESS_JSON_FILES.outputs.beta_deployment_files_output }}" ]; then
-            echo '[]' > beta_files.json
-          else
-            echo '${{ needs.PROCESS_JSON_FILES.outputs.beta_deployment_files_output }}' > beta_files.json
-          fi
     strategy:
       fail-fast: true
       matrix:
-        json_file: ${{ fromJSON(steps.check-json.outputs.beta_files.json) }}
+        json_file: ${{ fromJSON(needs.PROCESS_JSON_FILES.outputs.beta_deployment_files_output) }}
     uses: MeroneYilma/CDK-Training/.github/workflows/cdk_deploy.yaml@alpha
     with:
       json_file_path: .github/workflows/data
@@ -94,20 +104,10 @@ jobs:
   RELEASE:
     needs: [SELECT_ENVIRONMENT, PROCESS_JSON_FILES]
     if: needs.SELECT_ENVIRONMENT.outputs.RELEASE == 'True'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check and Set Default JSON Files
-        id: check-json
-        run: |
-          if [ -z "${{ needs.PROCESS_JSON_FILES.outputs.release_deployment_files_output }}" ]; then
-            echo '[]' > release_files.json
-          else
-            echo '${{ needs.PROCESS_JSON_FILES.outputs.release_deployment_files_output }}' > release_files.json
-          fi
     strategy:
       fail-fast: true
       matrix:
-        json_file: ${{ fromJSON(steps.check-json.outputs.release_files.json) }}
+        json_file: ${{ fromJSON(needs.PROCESS_JSON_FILES.outputs.release_deployment_files_output) }}
     uses: MeroneYilma/CDK-Training/.github/workflows/cdk_deploy.yaml@alpha
     with:
       json_file_path: .github/workflows/data
