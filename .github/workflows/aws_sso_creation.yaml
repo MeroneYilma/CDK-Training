@@ -35,7 +35,7 @@ jobs:
         id: set_deployment_files
         shell: bash
         run: | 
-          echo ALPHA_FILES='["accounts/Demo_Account24","accounts/Demo_Account22"]' >> $GITHUB_OUTPUT
+          echo ALPHA_FILES='["accounts/Demo_Account21","accounts/Demo_Account22"]' >> $GITHUB_OUTPUT
           echo BETA_FILES='[]' >> $GITHUB_OUTPUT
           echo RELEASE_FILES='[]' >> $GITHUB_OUTPUT
 
@@ -51,18 +51,18 @@ jobs:
       fail-fast: true
       matrix:
         json_file: ${{ fromJSON(needs.PROCESS_JSON_FILES.outputs.alpha_deployment_files_output) }}
+    runs-on: ubuntu-latest
     steps:
       - name: Set Stack Name
         id: set-stack-name
         run: echo "stack_name=AWSControlTowerAccountFactoryStack-${{ matrix.json_file//_/- }}" >> $GITHUB_ENV
 
-      - name: CDK Deploy
-        uses: MeroneYilma/CDK-Training/.github/workflows/cdk_deploy.yaml@alpha
-        with:
-          json_file_path: .github/workflows/data
-          json_file: ${{ matrix.json_file }}
-          gh_environment: ALPHA
-          stack_name: ${{ env.stack_name }}
+    uses: MeroneYilma/CDK-Training/.github/workflows/cdk_deploy.yaml@alpha
+    with:
+      json_file_path: .github/workflows/data
+      json_file: ${{ matrix.json_file }}
+      gh_environment: ALPHA
+      stack_name: ${{ env.stack_name }}
 
   BETA:
     needs: [SELECT_ENVIRONMENT, PROCESS_JSON_FILES]
@@ -71,18 +71,18 @@ jobs:
       fail-fast: true
       matrix:
         json_file: ${{ fromJSON(needs.PROCESS_JSON_FILES.outputs.beta_deployment_files_output) }}
+    runs-on: ubuntu-latest
     steps:
       - name: Set Stack Name
         id: set-stack-name
         run: echo "stack_name=AWSControlTowerAccountFactoryStack-${{ matrix.json_file//_/- }}" >> $GITHUB_ENV
 
-      - name: CDK Deploy
-        uses: MeroneYilma/CDK-Training/.github/workflows/cdk_deploy.yaml@alpha
-        with:
-          json_file_path: .github/workflows/data
-          json_file: ${{ matrix.json_file }}
-          gh_environment: BETA
-          stack_name: ${{ env.stack_name }}
+    uses: MeroneYilma/CDK-Training/.github/workflows/cdk_deploy.yaml@alpha
+    with:
+      json_file_path: .github/workflows/data
+      json_file: ${{ matrix.json_file }}
+      gh_environment: BETA
+      stack_name: ${{ env.stack_name }}
 
   RELEASE:
     needs: [SELECT_ENVIRONMENT, PROCESS_JSON_FILES]
@@ -91,15 +91,15 @@ jobs:
       fail-fast: true
       matrix:
         json_file: ${{ fromJSON(needs.PROCESS_JSON_FILES.outputs.release_deployment_files_output) }}
+    runs-on: ubuntu-latest
     steps:
       - name: Set Stack Name
         id: set-stack-name
         run: echo "stack_name=AWSControlTowerAccountFactoryStack-${{ matrix.json_file//_/- }}" >> $GITHUB_ENV
 
-      - name: CDK Deploy
-        uses: MeroneYilma/CDK-Training/.github/workflows/cdk_deploy.yaml@alpha
-        with:
-          json_file_path: .github/workflows/data
-          json_file: ${{ matrix.json_file }}
-          gh_environment: RELEASE
-          stack_name: ${{ env.stack_name }}
+    uses: MeroneYilma/CDK-Training/.github/workflows/cdk_deploy.yaml@alpha
+    with:
+      json_file_path: .github/workflows/data
+      json_file: ${{ matrix.json_file }}
+      gh_environment: RELEASE
+      stack_name: ${{ env.stack_name }}
