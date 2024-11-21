@@ -54,14 +54,6 @@ jobs:
         run: 'pip install -r requirements.txt'
         working-directory: ${{ steps.cdk_directory.outputs.working_directory_output }}
 
-      - name: List files for debugging
-        run: ls -al ../../../${{ inputs.json_file_path }}/
-        working-directory: ${{ steps.cdk_directory.outputs.working_directory_output }}
-
-      - name: Wait for CloudFormation stack to be stable
-        run: |
-          aws cloudformation wait stack-update-complete --stack-name AWSControlTowerAccountFactoryStack
-
       - name: CDK Deploy
         run: cdk deploy -c filepath=../../../${{ inputs.json_file_path }}/${{ inputs.json_file }}.json --all --require-approval never
         working-directory: ${{ steps.cdk_directory.outputs.working_directory_output }}
