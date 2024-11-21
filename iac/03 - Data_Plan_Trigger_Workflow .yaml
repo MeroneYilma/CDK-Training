@@ -1,89 +1,89 @@
-# name: Backup_Trigger_Workflow
+# # name: Backup_Trigger_Workflow
 
-# on:
-#   push:
-#     branches:
-#   
-#   workflow_dispatch:
+# # on:
+# #   push:
+# #     branches:
+# #   
+# #   workflow_dispatch:
 
-# Added permissions section to allow OIDC authentication
-permissions:
-  id-token: write  # Allows the workflow to request an OIDC token
-  contents: read
+# # Added permissions section to allow OIDC authentication
+# permissions:
+#   id-token: write  # Allows the workflow to request an OIDC token
+#   contents: read
 
-env:
-  ALPHA: True
-  BETA: False
-  RELEASE: False
+# env:
+#   ALPHA: True
+#   BETA: False
+#   RELEASE: False
 
-jobs:
-  SELECT_ENVIRONMENT:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Set Environment
-        id: set-env
-        run: |
-          echo ALPHA=$ALPHA >> $GITHUB_OUTPUT
-          echo BETA=$BETA >> $GITHUB_OUTPUT
-          echo RELEASE=$RELEASE >> $GITHUB_OUTPUT
+# jobs:
+#   SELECT_ENVIRONMENT:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Set Environment
+#         id: set-env
+#         run: |
+#           echo ALPHA=$ALPHA >> $GITHUB_OUTPUT
+#           echo BETA=$BETA >> $GITHUB_OUTPUT
+#           echo RELEASE=$RELEASE >> $GITHUB_OUTPUT
 
-    outputs:
-      ALPHA: ${{ steps.set-env.outputs.ALPHA }}
-      BETA: ${{ steps.set-env.outputs.BETA }}
-      RELEASE: ${{ steps.set-env.outputs.RELEASE }}
+#     outputs:
+#       ALPHA: ${{ steps.set-env.outputs.ALPHA }}
+#       BETA: ${{ steps.set-env.outputs.BETA }}
+#       RELEASE: ${{ steps.set-env.outputs.RELEASE }}
 
-  PROCESS_JSON_FILES:
-    needs: [SELECT_ENVIRONMENT]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Set Deployment related JSON Files
-        id: set_deployment_files
-        shell: bash
-        run: | 
-          echo ALPHA_FILES='["us-east-1/alpha_data_plan_trigger_gh_arc_v1.0.0"]' >> $GITHUB_OUTPUT
-          echo BETA_FILES='[]' >> $GITHUB_OUTPUT
-          echo RELEASE_FILES='[]' >> $GITHUB_OUTPUT
+#   PROCESS_JSON_FILES:
+#     needs: [SELECT_ENVIRONMENT]
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Set Deployment related JSON Files
+#         id: set_deployment_files
+#         shell: bash
+#         run: | 
+#           echo ALPHA_FILES='["us-east-1/alpha_data_plan_trigger_gh_arc_v1.0.0"]' >> $GITHUB_OUTPUT
+#           echo BETA_FILES='[]' >> $GITHUB_OUTPUT
+#           echo RELEASE_FILES='[]' >> $GITHUB_OUTPUT
 
-    outputs: 
-      alpha_deployment_files_output: ${{ steps.set_deployment_files.outputs.ALPHA_FILES }}
-      beta_deployment_files_output: ${{ steps.set_deployment_files.outputs.BETA_FILES }}
-      release_deployment_files_output: ${{ steps.set_deployment_files.outputs.RELEASE_FILES }}
+#     outputs: 
+#       alpha_deployment_files_output: ${{ steps.set_deployment_files.outputs.ALPHA_FILES }}
+#       beta_deployment_files_output: ${{ steps.set_deployment_files.outputs.BETA_FILES }}
+#       release_deployment_files_output: ${{ steps.set_deployment_files.outputs.RELEASE_FILES }}
 
-  ALPHA:
-    needs: [SELECT_ENVIRONMENT, PROCESS_JSON_FILES]
-    if: needs.SELECT_ENVIRONMENT.outputs.ALPHA == 'True'
-    strategy:
-      fail-fast: true
-      matrix:
-        json_file: ${{ fromJSON(needs.PROCESS_JSON_FILES.outputs.alpha_deployment_files_output) }}
-    uses: ./.github/workflows/data_plan_trigger.yaml
-    with:
-      json_file_path: .github/workflows/data
-      json_file: ${{ matrix.json_file }}
-      gh_environment: ALPHA
+#   ALPHA:
+#     needs: [SELECT_ENVIRONMENT, PROCESS_JSON_FILES]
+#     if: needs.SELECT_ENVIRONMENT.outputs.ALPHA == 'True'
+#     strategy:
+#       fail-fast: true
+#       matrix:
+#         json_file: ${{ fromJSON(needs.PROCESS_JSON_FILES.outputs.alpha_deployment_files_output) }}
+#     uses: ./.github/workflows/data_plan_trigger.yaml
+#     with:
+#       json_file_path: .github/workflows/data
+#       json_file: ${{ matrix.json_file }}
+#       gh_environment: ALPHA
 
-  BETA:
-    needs: [SELECT_ENVIRONMENT, PROCESS_JSON_FILES]
-    if: needs.SELECT_ENVIRONMENT.outputs.BETA == 'True'
-    strategy:
-      fail-fast: true
-      matrix:
-        json_file: ${{ fromJSON(needs.PROCESS_JSON_FILES.outputs.beta_deployment_files_output) }}
-    uses: ./.github/workflows/data_plan_trigger.yaml
-    with:
-      json_file_path: .github/workflows/data
-      json_file: ${{ matrix.json_file }}
-      gh_environment: BETA
+#   BETA:
+#     needs: [SELECT_ENVIRONMENT, PROCESS_JSON_FILES]
+#     if: needs.SELECT_ENVIRONMENT.outputs.BETA == 'True'
+#     strategy:
+#       fail-fast: true
+#       matrix:
+#         json_file: ${{ fromJSON(needs.PROCESS_JSON_FILES.outputs.beta_deployment_files_output) }}
+#     uses: ./.github/workflows/data_plan_trigger.yaml
+#     with:
+#       json_file_path: .github/workflows/data
+#       json_file: ${{ matrix.json_file }}
+#       gh_environment: BETA
 
-  RELEASE:
-    needs: [SELECT_ENVIRONMENT, PROCESS_JSON_FILES]
-    if: needs.SELECT_ENVIRONMENT.outputs.RELEASE == 'True'
-    strategy:
-      fail-fast: true
-      matrix:
-        json_file: ${{ fromJSON(needs.PROCESS_JSON_FILES.outputs.release_deployment_files_output) }}
-    uses: ./.github/workflows/data_plan_trigger.yaml
-    with:
-      json_file_path: .github/workflows/data
-      json_file: ${{ matrix.json_file }}
-      gh_environment: RELEASE
+#   RELEASE:
+#     needs: [SELECT_ENVIRONMENT, PROCESS_JSON_FILES]
+#     if: needs.SELECT_ENVIRONMENT.outputs.RELEASE == 'True'
+#     strategy:
+#       fail-fast: true
+#       matrix:
+#         json_file: ${{ fromJSON(needs.PROCESS_JSON_FILES.outputs.release_deployment_files_output) }}
+#     uses: ./.github/workflows/data_plan_trigger.yaml
+#     with:
+#       json_file_path: .github/workflows/data
+#       json_file: ${{ matrix.json_file }}
+#       gh_environment: RELEASE
