@@ -35,7 +35,7 @@ jobs:
         id: set_deployment_files
         shell: bash
         run: | 
-          echo ALPHA_FILES='["accounts/Demo_Account21","accounts/Demo_Account22"]' >> $GITHUB_OUTPUT
+          echo ALPHA_FILES='["accounts/Demo_Account24","accounts/Demo_Account22"]' >> $GITHUB_OUTPUT
           echo BETA_FILES='[]' >> $GITHUB_OUTPUT
           echo RELEASE_FILES='[]' >> $GITHUB_OUTPUT
 
@@ -55,10 +55,10 @@ jobs:
     steps:
       - name: Set Stack Name
         id: set-stack-name
-        run: echo "stack_name=AWSControlTowerAccountFactoryStack-${{ matrix.json_file//_/- }}" >> $GITHUB_ENV
+        run: echo "stack_name=AWSControlTowerAccountFactoryStack-${{ matrix.json_file }}" | sed 's/_/-/g' >> $GITHUB_ENV
 
     outputs:
-      stack_name: ${{ steps.set-stack-name.outputs.stack_name }}
+      stack_name: ${{ env.stack_name }}
 
   ALPHA:
     needs: [SET_STACK_NAME_ALPHA]
@@ -81,10 +81,10 @@ jobs:
     steps:
       - name: Set Stack Name
         id: set-stack-name
-        run: echo "stack_name=AWSControlTowerAccountFactoryStack-${{ matrix.json_file//_/- }}" >> $GITHUB_ENV
+        run: echo "stack_name=AWSControlTowerAccountFactoryStack-${{ matrix.json_file }}" | sed 's/_/-/g' >> $GITHUB_ENV
 
     outputs:
-      stack_name: ${{ steps.set-stack-name.outputs.stack_name }}
+      stack_name: ${{ env.stack_name }}
 
   BETA:
     needs: [SET_STACK_NAME_BETA]
@@ -107,10 +107,10 @@ jobs:
     steps:
       - name: Set Stack Name
         id: set-stack-name
-        run: echo "stack_name=AWSControlTowerAccountFactoryStack-${{ matrix.json_file//_/- }}" >> $GITHUB_ENV
+        run: echo "stack_name=AWSControlTowerAccountFactoryStack-${{ matrix.json_file }}" | sed 's/_/-/g' >> $GITHUB_ENV
 
     outputs:
-      stack_name: ${{ steps.set-stack-name.outputs.stack_name }}
+      stack_name: ${{ env.stack_name }}
 
   RELEASE:
     needs: [SET_STACK_NAME_RELEASE]
