@@ -8,6 +8,9 @@ app = cdk.App()
 # FilePath
 filepath = app.node.try_get_context("filepath")
 
+if not filepath:
+    raise ValueError("The 'filepath' context parameter is required.")
+
 # Load File
 with open(filepath, 'r') as f:
     config = json.load(f)
