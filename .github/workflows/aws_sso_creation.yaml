@@ -18,9 +18,9 @@ jobs:
       - name: Set Environment
         id: set-env
         run: |
-          echo ALPHA=$ALPHA >> $GITHUB_OUTPUT
-          echo BETA=$BETA >> $GITHUB_OUTPUT
-          echo RELEASE=$RELEASE >> $GITHUB_OUTPUT
+          echo "ALPHA=$ALPHA" >> $GITHUB_ENV
+          echo "BETA=$BETA" >> $GITHUB_ENV
+          echo "RELEASE=$RELEASE" >> $GITHUB_ENV
 
     outputs:
       ALPHA: ${{ steps.set-env.outputs.ALPHA }}
@@ -35,9 +35,9 @@ jobs:
         id: set_deployment_files
         shell: bash
         run: | 
-          echo ALPHA_FILES='["sso-groups/Demo_Account5_sso", "sso-groups/Demo_Account9_sso", "sso-groups/Demo_Account10_sso", "sso-groups/Demo_Account11_sso"]' >> $GITHUB_OUTPUT
-          echo BETA_FILES='[]' >> $GITHUB_OUTPUT
-          echo RELEASE_FILES='[]' >> $GITHUB_OUTPUT
+          echo "ALPHA_FILES=[\"sso-groups/Demo_Account5_sso\", \"sso-groups/Demo_Account9_sso\", \"sso-groups/Demo_Account10_sso\", \"sso-groups/Demo_Account11_sso\"]" >> $GITHUB_ENV
+          echo "BETA_FILES=[]" >> $GITHUB_ENV
+          echo "RELEASE_FILES=[]" >> $GITHUB_ENV
 
     outputs: 
       alpha_deployment_files_output: ${{ steps.set_deployment_files.outputs.ALPHA_FILES }}
