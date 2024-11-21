@@ -3,9 +3,9 @@ on:
   workflow_dispatch:
 
 env:
-  ALPHA: True
-  BETA: False
-  RELEASE: False
+  ALPHA: true
+  BETA: false
+  RELEASE: false
 
 permissions:
   contents: write
@@ -18,9 +18,9 @@ jobs:
       - name: Set Environment
         id: set-env
         run: |
-          echo "ALPHA=$ALPHA" >> $GITHUB_OUTPUT
-          echo "BETA=$BETA" >> $GITHUB_OUTPUT
-          echo "RELEASE=$RELEASE" >> $GITHUB_OUTPUT
+          echo "ALPHA=$ALPHA" >> $GITHUB_ENV
+          echo "BETA=$BETA" >> $GITHUB_ENV
+          echo "RELEASE=$RELEASE" >> $GITHUB_ENV
     outputs:
       ALPHA: ${{ steps.set-env.outputs.ALPHA }}
       BETA: ${{ steps.set-env.outputs.BETA }}
@@ -44,7 +44,7 @@ jobs:
 
   ALPHA:
     needs: [SELECT_ENVIRONMENT, PROCESS_JSON_FILES]
-    if: needs.SELECT_ENVIRONMENT.outputs.ALPHA == 'True'
+    if: needs.SELECT_ENVIRONMENT.outputs.ALPHA == 'true'
     strategy:
       fail-fast: true
       matrix:
@@ -61,7 +61,7 @@ jobs:
 
   BETA:
     needs: [SELECT_ENVIRONMENT, PROCESS_JSON_FILES]
-    if: needs.SELECT_ENVIRONMENT.outputs.BETA == 'True'
+    if: needs.SELECT_ENVIRONMENT.outputs.BETA == 'true'
     strategy:
       fail-fast: true
       matrix:
@@ -78,7 +78,7 @@ jobs:
 
   RELEASE:
     needs: [SELECT_ENVIRONMENT, PROCESS_JSON_FILES]
-    if: needs.SELECT_ENVIRONMENT.outputs.RELEASE == 'True'
+    if: needs.SELECT_ENVIRONMENT.outputs.RELEASE == 'true'
     strategy:
       fail-fast: true
       matrix:
