@@ -1,4 +1,5 @@
 name: 04 - AWS Account Creation and SSO Mapping CDK Deploy Trigger Workflow
+
 on:
   workflow_dispatch:
 
@@ -18,9 +19,10 @@ jobs:
       - name: Set Environment
         id: set-env
         run: |
-          echo "ALPHA=${{ env.ALPHA }}" >> $GITHUB_ENV
-          echo "BETA=${{ env.BETA }}" >> $GITHUB_ENV
-          echo "RELEASE=${{ env.RELEASE }}" >> $GITHUB_ENV
+          echo "ALPHA=$ALPHA" >> $GITHUB_ENV
+          echo "BETA=$BETA" >> $GITHUB_ENV
+          echo "RELEASE=$RELEASE" >> $GITHUB_ENV
+
     outputs:
       ALPHA: ${{ env.ALPHA }}
       BETA: ${{ env.BETA }}
@@ -34,52 +36,50 @@ jobs:
         id: set_deployment_files
         shell: bash
         run: | 
-          # echo ALPHA_FILES='["accounts/Demo_Account5", "accounts/Demo_Account9", "accounts/Demo_Account10", "accounts/Demo_Account12"]' >> $GITHUB_OUTPUT
-          echo ALPHA_FILES='["sso-groups/Demo_Account9_sso", "sso-groups/Demo_Account10_sso", "sso-groups/Demo_Account12_sso"]' >> $GITHUB_OUTPUT
+          echo ALPHA_FILES='["accounts/Demo_Account5", "accounts/Demo_Account10"]' >> $GITHUB_ENV
+          echo ALPHA_FILES='["sso-groups/Demo_Account9_sso.json", "sso-groups/Demo_Account10_sso.json", "sso-groups/Demo_Account11_sso.json", "sso-groups/Demo_Account12_sso.json"]' >> $GITHUB_ENV
           echo BETA_FILES='[]' >> $GITHUB_OUTPUT
           echo RELEASE_FILES='[]' >> $GITHUB_OUTPUT
     outputs: 
-      alpha_deployment_files_output: ${{ steps.set_deployment_files.outputs.ALPHA_FILES }}
-      beta_deployment_files_output: ${{ steps.set_deployment_files.outputs.BETA_FILES }}
-      release_deployment_files_output: ${{ steps.set_deployment_files.outputs.RELEASE_FILES }}
+      alpha_deployment_files_output: ${{ env.ALPHA_FILES }}
+      beta_deployment_files_output: ${{ env.BETA_FILES }}
+      release_deployment_files_output: ${{ env.RELEASE_FILES }}
 
   ALPHA:
     needs: [SELECT_ENVIRONMENT, PROCESS_JSON_FILES]
-    if: ${{ needs.SELECT_ENVIRONMENT.outputs.ALPHA == 'true' }}
-    strategy:
-      fail-fast: true
-      matrix:
-        json_file: ${{ fromJSON(needs.PROCESS_JSON_FILES.outputs.alpha_deployment_files_output) }}
-    uses: MeroneYilma/CDK-Training/.github/workflows/cdk_deploy.yaml@alpha
-    with:
-      json_file_path: .github/workflows/data
-      json_file: ${{ matrix.json_file }}
-      gh_environment: ALPHA
+    if: needs.SELECT_ENVIRONMENT.outputs.ALPHA == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Git clone the repository
+        uses: actions/checkout@v4
+
+      - name: CDK Deploy
+        run: |
+          filepaths=$(echo ${{ needs.PROCESS_JSON_FILES.outputs.alpha_deployment_files_output }} | jq -r '.[]' | paste -sd "," -)
+          cdk deploy -c filepaths=${{ github.workspace }}/${filepaths} --all --require-approval never
 
   BETA:
     needs: [SELECT_ENVIRONMENT, PROCESS_JSON_FILES]
-    if: ${{ needs.SELECT_ENVIRONMENT.outputs.BETA == 'true' }}
-    strategy:
-      fail-fast: true
-      matrix:
-        json_file: ${{ fromJSON(needs.PROCESS_JSON_FILES.outputs.beta_deployment_files_output) }}
-    uses: MeroneYilma/CDK-Training/.github/workflows/cdk_deploy.yaml@alpha
-    with:
-      json_file_path: .github/workflows/data
-      json_file: ${{ matrix.json_file }}
-      gh_environment: BETA
+    if: needs.SELECT_ENVIRONMENT.outputs.BETA == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Git clone the repository
+        uses: actions/checkout@v4
+
+      - name: CDK Deploy
+        run: |
+          filepaths=$(echo ${{ needs.PROCESS_JSON_FILES.outputs.beta_deployment_files_output }} | jq -r '.[]' | paste -sd "," -)
+          cdk deploy -c filepaths=${{ github.workspace }}/${filepaths} --all --require-approval never
 
   RELEASE:
     needs: [SELECT_ENVIRONMENT, PROCESS_JSON_FILES]
-    if: ${{ needs.SELECT_ENVIRONMENT.outputs.RELEASE == 'true' }}
-    strategy:
-      fail-fast: true
-      matrix:
-        json_file: ${{ fromJSON(needs.PROCESS_JSON_FILES.outputs.release_deployment_files_output) }}
-    uses: MeroneYilma/CDK-Training/.github/workflows/cdk_deploy.yaml@alpha
-    with:
-      json_file_path: .github/workflows/data
-      json_file: ${{ matrix.json_file }}
-      gh_environment: RELEASE
+    if: needs.SELECT_ENVIRONMENT.outputs.RELEASE == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Git clone the repository
+        uses: actions/checkout@v4
 
- 
+      - name: CDK Deploy
+        run: |
+          filepaths=$(echo ${{ needs.PROCESS_JSON_FILES.outputs.release_deployment_files_output }} | jq -r '.[]' | paste -sd "," -)
+          cdk deploy -c filepaths=${{ github.workspace }}/${filepaths} --all --require-approval never
