@@ -55,9 +55,9 @@ jobs:
         working-directory: ${{ steps.cdk_directory.outputs.working_directory_output }}
 
       - name: List files for debugging
-        run: ls -al ../../../${{ inputs.json_file_path }}/
+        run: ls -al ../../../../${{ inputs.json_file_path }}/
         working-directory: ${{ steps.cdk_directory.outputs.working_directory_output }}
 
       - name: CDK Deploy
-        run: cdk deploy -c filepaths=../../../${{ inputs.json_file_path }}/${{ inputs.json_file }}.json --all --require-approval never
+        run: cdk deploy -c filepaths=../../../../${{ inputs.json_file_path }}/${{ inputs.json_file }}.json --all --require-approval never
         working-directory: ${{ steps.cdk_directory.outputs.working_directory_output }}
