@@ -1,73 +1,85 @@
-name: CDK Deploy Workflow
+name: 04 - AWS Account Creation and SSO Mapping CDK Deploy Trigger Workflow
+on:
+  workflow_dispatch:
 
-on:   
-  workflow_call: 
-    inputs:
-      json_file_path:
-        description: 'Specifies the JSON file path.'
-        required: true
-        type: string
-      json_file:
-        description: 'Specifies the JSON Data file.'
-        required: true
-        type: string
-      gh_environment:
-        description: 'Specifies the GitHub deployment environment.'
-        required: true
-        type: string
-        
-jobs:    
-  CDK_DEPLOY: 
+env:
+  ALPHA: True
+  BETA: False
+  RELEASE: False
+  
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+  SELECT_ENVIRONMENT:
     runs-on: ubuntu-latest
-    environment: ${{ inputs.gh_environment }}
-    permissions:
-      id-token: write
-      contents: write
-
     steps:
-      - name: Git clone the repository
-        uses: actions/checkout@v4
-
-      - name: Print inputs for debugging
+      - name: Set Environment
+        id: set-env
         run: |
-          echo "json_file_path: ${{ inputs.json_file_path }}"
-          echo "json_file: ${{ inputs.json_file }}"
-          echo "gh_environment: ${{ inputs.gh_environment }}"
+          echo ALPHA=$ALPHA >> $GITHUB_OUTPUT
+          echo BETA=$BETA >> $GITHUB_OUTPUT
+          echo RELEASE=$RELEASE >> $GITHUB_OUTPUT
 
-      - name: Use AWS Configure Custom Action
-        id: aws_configure
-        uses: MeroneYilma/CDK-Training/.github/actions/global/aws_github_auth@alpha
-        with: 
-          json_data_file: "./${{ inputs.json_file_path }}/${{ inputs.json_file }}.json"
+    outputs:
+      ALPHA: ${{ steps.set-env.outputs.ALPHA }}
+      BETA: ${{ steps.set-env.outputs.BETA }}
+      RELEASE: ${{ steps.set-env.outputs.RELEASE }}
 
-      - name: Use AWS CDK Working Directory Custom Action
-        id: cdk_directory
-        uses: MeroneYilma/CDK-Training/.github/actions/global/cdk_directory@alpha
-        with: 
-          json_data_file: "./${{ inputs.json_file_path }}/${{ inputs.json_file }}.json"
+  PROCESS_JSON_FILES:
+    needs: [SELECT_ENVIRONMENT]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set Deployment related JSON Files
+        id: set_deployment_files
+        shell: bash
+        run: | 
+          echo ALPHA_FILES='["accounts/Demo_Account24","accounts/Demo_Account22"]' >> $GITHUB_OUTPUT
+          # echo ALPHA_FILES='["sso-groups/Account_SSO_Cyberdefense_Nonprod", "sso-groups/Account_SSO_Cyberdefense_Prod", "sso-groups/Account_SSO_Lending_Nonprod", "sso-groups/Account_SSO_Lending_Prod"]' >> $GITHUB_OUTPUT
+          echo BETA_FILES='[]' >> $GITHUB_OUTPUT
+          echo RELEASE_FILES='[]' >> $GITHUB_OUTPUT
 
-      - name: Install AWS CDK
-        run: |
-          npm install -g aws-cdk
+    outputs: 
+      alpha_deployment_files_output: ${{ steps.set_deployment_files.outputs.ALPHA_FILES }}
+      beta_deployment_files_output: ${{ steps.set_deployment_files.outputs.BETA_FILES }}
+      release_deployment_files_output: ${{ steps.set_deployment_files.outputs.RELEASE_FILES }}
 
-      - name: Install Requirements 
-        run: 'pip install -r requirements.txt'
-        working-directory: ${{ steps.cdk_directory.outputs.working_directory_output }}
+  ALPHA:
+    needs: [SELECT_ENVIRONMENT, PROCESS_JSON_FILES]
+    if: needs.SELECT_ENVIRONMENT.outputs.ALPHA == 'True'
+    strategy:
+      fail-fast: true
+      matrix:
+        json_file: ${{ fromJSON(needs.PROCESS_JSON_FILES.outputs.alpha_deployment_files_output) }}
+    uses: MeroneYilma/CDK-Training/.github/workflows/cdk_deploy.yaml@alpha
+    with:
+      json_file_path: .github/workflows/data
+      json_file: ${{ matrix.json_file }}
+      gh_environment: ALPHA
 
-      - name: List files for debugging
-        run: ls -al ../../../${{ inputs.json_file_path }}/
-        working-directory: ${{ steps.cdk_directory.outputs.working_directory_output }}
+  BETA:
+    needs: [SELECT_ENVIRONMENT, PROCESS_JSON_FILES]
+    if: needs.SELECT_ENVIRONMENT.outputs.BETA == 'True'
+    strategy:
+      fail-fast: true
+      matrix:
+        json_file: ${{ fromJSON(needs.PROCESS_JSON_FILES.outputs.beta_deployment_files_output) }}
+    uses: MeroneYilma/CDK-Training/.github/workflows/cdk_deploy.yaml@alpha
+    with:
+      json_file_path: .github/workflows/data
+      json_file: ${{ matrix.json_file }}
+      gh_environment: BETA
 
-      - name: Wait for CloudFormation stack to be stable
-        run: |
-          aws cloudformation wait stack-update-complete --stack-name AWSControlTowerAccountFactoryStack
-        env:
-          AWS_DEFAULT_REGION: us-east-1
-          AWS_REGION: us-east-1
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
-
-      - name: CDK Deploy
-        run: cdk deploy -c filepath=../../../${{ inputs.json_file_path }}/${{ inputs.json_file }}.json --all --require-approval never
-        working-directory: ${{ steps.cdk_directory.outputs.working_directory_output }}
+  RELEASE:
+    needs: [SELECT_ENVIRONMENT, PROCESS_JSON_FILES]
+    if: needs.SELECT_ENVIRONMENT.outputs.RELEASE == 'True'
+    strategy:
+      fail-fast: true
+      matrix:
+        json_file: ${{ fromJSON(needs.PROCESS_JSON_FILES.outputs.release_deployment_files_output) }}
+    uses: MeroneYilma/CDK-Training/.github/workflows/cdk_deploy.yaml@alpha
+    with:
+      json_file_path: .github/workflows/data
+      json_file: ${{ matrix.json_file }}
+      gh_environment: RELEASE
