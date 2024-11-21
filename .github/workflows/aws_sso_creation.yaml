@@ -35,8 +35,7 @@ jobs:
         id: set_deployment_files
         shell: bash
         run: | 
-          echo ALPHA_FILES='["accounts/Demo_Account21","accounts/Demo_Account22"]' >> $GITHUB_OUTPUT
-          # echo ALPHA_FILES='["sso-groups/Account_SSO_Cyberdefense_Nonprod", "sso-groups/Account_SSO_Cyberdefense_Prod", "sso-groups/Account_SSO_Lending_Nonprod", "sso-groups/Account_SSO_Lending_Prod"]' >> $GITHUB_OUTPUT
+          echo ALPHA_FILES='["accounts/Demo_Account24","accounts/Demo_Account22"]' >> $GITHUB_OUTPUT
           echo BETA_FILES='[]' >> $GITHUB_OUTPUT
           echo RELEASE_FILES='[]' >> $GITHUB_OUTPUT
 
@@ -57,6 +56,7 @@ jobs:
       json_file_path: .github/workflows/data
       json_file: ${{ matrix.json_file }}
       gh_environment: ALPHA
+      stack_name: AWSControlTowerAccountFactoryStack-${{ matrix.json_file.replace('_', '-') }}
 
   BETA:
     needs: [SELECT_ENVIRONMENT, PROCESS_JSON_FILES]
@@ -70,6 +70,7 @@ jobs:
       json_file_path: .github/workflows/data
       json_file: ${{ matrix.json_file }}
       gh_environment: BETA
+      stack_name: AWSControlTowerAccountFactoryStack-${{ matrix.json_file.replace('_', '-') }}
 
   RELEASE:
     needs: [SELECT_ENVIRONMENT, PROCESS_JSON_FILES]
@@ -83,3 +84,4 @@ jobs:
       json_file_path: .github/workflows/data
       json_file: ${{ matrix.json_file }}
       gh_environment: RELEASE
+      stack_name: AWSControlTowerAccountFactoryStack-${{ matrix.json_file.replace('_', '-') }}

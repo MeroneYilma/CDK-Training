@@ -15,6 +15,10 @@ on:
         description: 'Specifies the GitHub deployment environment.'
         required: true
         type: string
+      stack_name:
+        description: 'Specifies the CloudFormation stack name.'
+        required: true
+        type: string
         
 jobs:    
   CDK_DEPLOY: 
@@ -33,6 +37,7 @@ jobs:
           echo "json_file_path: ${{ inputs.json_file_path }}"
           echo "json_file: ${{ inputs.json_file }}"
           echo "gh_environment: ${{ inputs.gh_environment }}"
+          echo "stack_name: ${{ inputs.stack_name }}"
 
       - name: Use AWS Configure Custom Action
         id: aws_configure
@@ -70,10 +75,10 @@ jobs:
 
       - name: Wait for CloudFormation stack to be stable
         run: |
-          aws cloudformation wait stack-update-complete --stack-name AWSControlTowerAccountFactoryStack
+          aws cloudformation wait stack-update-complete --stack-name ${{ inputs.stack_name }}
         continue-on-error: true
 
       - name: Describe CloudFormation Stack Events
         if: failure()
         run: |
-          aws cloudformation describe-stack-events --stack-name AWSControlTowerAccountFactoryStack
+          aws cloudformation describe-stack-events --stack-name ${{ inputs.stack_name }}
