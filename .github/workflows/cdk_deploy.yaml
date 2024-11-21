@@ -49,17 +49,18 @@ jobs:
 
       - name: Check if JSON file exists
         run: |
-          # Set the full file path using the github.workspace variable
-          FILE_PATH="${{ github.workspace }}/${{ inputs.json_file_path }}/${{ inputs.json_file }}.json"
+          # Set the relative file path
+          FILE_PATH="../../../../.github/workflows/data/sso-groups/${{ inputs.json_file }}.json"
           # Check if the file exists
           if [ ! -f "$FILE_PATH" ]; then
             echo "File not found: $FILE_PATH"
             # List the contents of the directory for debugging
-            ls -al "${{ github.workspace }}/${{ inputs.json_file_path }}/"
+            ls -al "../../../../.github/workflows/data/sso-groups/"
             exit 1
           fi
+        working-directory: ${{ steps.cdk_directory.outputs.working_directory_output }}
 
       - name: CDK Deploy
-        # Use the full path for the filepath parameter
-        run: cdk deploy -c filepath=${{ github.workspace }}/${{ inputs.json_file_path }}/${{ inputs.json_file }}.json  --all --require-approval never
+        # Use the relative path for the filepath parameter
+        run: cdk deploy -c filepath=../../../../.github/workflows/data/sso-groups/${{ inputs.json_file }}.json --all --require-approval never
         working-directory: ${{ steps.cdk_directory.outputs.working_directory_output }}
