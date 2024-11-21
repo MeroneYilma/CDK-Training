@@ -51,11 +51,15 @@ jobs:
       fail-fast: true
       matrix:
         json_file: ${{ fromJSON(needs.PROCESS_JSON_FILES.outputs.alpha_deployment_files_output) }}
-    uses: MeroneYilma/CDK-Training/.github/workflows/cdk_deploy.yaml@alpha
-    with:
-      json_file_path: .github/workflows/data
-      json_file: ${{ matrix.json_file }}
-      gh_environment: ALPHA
+    steps:
+      - name: Print matrix values
+        run: echo "Deploying JSON file: ${{ matrix.json_file }}"
+      - name: Call CDK Deploy Workflow
+        uses: MeroneYilma/CDK-Training/.github/workflows/cdk_deploy.yaml@alpha
+        with:
+          json_file_path: .github/workflows/data
+          json_file: ${{ matrix.json_file }}
+          gh_environment: ALPHA
 
   BETA:
     needs: [SELECT_ENVIRONMENT, PROCESS_JSON_FILES]
@@ -64,11 +68,15 @@ jobs:
       fail-fast: true
       matrix:
         json_file: ${{ fromJSON(needs.PROCESS_JSON_FILES.outputs.beta_deployment_files_output) }}
-    uses: MeroneYilma/CDK-Training/.github/workflows/cdk_deploy.yaml@alpha
-    with:
-      json_file_path: .github/workflows/data
-      json_file: ${{ matrix.json_file }}
-      gh_environment: BETA
+    steps:
+      - name: Print matrix values
+        run: echo "Deploying JSON file: ${{ matrix.json_file }}"
+      - name: Call CDK Deploy Workflow
+        uses: MeroneYilma/CDK-Training/.github/workflows/cdk_deploy.yaml@alpha
+        with:
+          json_file_path: .github/workflows/data
+          json_file: ${{ matrix.json_file }}
+          gh_environment: BETA
 
   RELEASE:
     needs: [SELECT_ENVIRONMENT, PROCESS_JSON_FILES]
@@ -77,8 +85,12 @@ jobs:
       fail-fast: true
       matrix:
         json_file: ${{ fromJSON(needs.PROCESS_JSON_FILES.outputs.release_deployment_files_output) }}
-    uses: MeroneYilma/CDK-Training/.github/workflows/cdk_deploy.yaml@alpha
-    with:
-      json_file_path: .github/workflows/data
-      json_file: ${{ matrix.json_file }}
-      gh_environment: RELEASE
+    steps:
+      - name: Print matrix values
+        run: echo "Deploying JSON file: ${{ matrix.json_file }}"
+      - name: Call CDK Deploy Workflow
+        uses: MeroneYilma/CDK-Training/.github/workflows/cdk_deploy.yaml@alpha
+        with:
+          json_file_path: .github/workflows/data
+          json_file: ${{ matrix.json_file }}
+          gh_environment: RELEASE

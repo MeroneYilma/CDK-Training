@@ -27,6 +27,12 @@ jobs:
       - name: Git clone the repository
         uses: actions/checkout@v4
 
+      - name: Print inputs for debugging
+        run: |
+          echo "json_file_path: ${{ inputs.json_file_path }}"
+          echo "json_file: ${{ inputs.json_file }}"
+          echo "gh_environment: ${{ inputs.gh_environment }}"
+
       - name: Use AWS Configure Custom Action
         id: aws_configure
         uses: MeroneYilma/CDK-Training/.github/actions/global/aws_github_auth@alpha
