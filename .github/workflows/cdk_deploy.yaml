@@ -61,5 +61,5 @@ jobs:
 
       - name: CDK Deploy
         # Use the full path for the filepath parameter
-        run: cdk deploy -c filepath=${{ github.workspace }}/${{ inputs.json_file_path }}/${{ inputs.json_file }}.json --all 
+        run: cdk deploy -c filepath=${{ github.workspace }}/${{ inputs.json_file_path }}/${{ inputs.json_file }}.json  --all --require-approval never
         working-directory: ${{ steps.cdk_directory.outputs.working_directory_output }}
