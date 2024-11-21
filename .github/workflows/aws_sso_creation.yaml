@@ -18,9 +18,9 @@ jobs:
       - name: Set Environment
         id: set-env
         run: |
-          echo "ALPHA=$ALPHA" >> $GITHUB_ENV
-          echo "BETA=$BETA" >> $GITHUB_ENV
-          echo "RELEASE=$RELEASE" >> $GITHUB_ENV
+          echo "ALPHA=${{ env.ALPHA }}" >> $GITHUB_ENV
+          echo "BETA=${{ env.BETA }}" >> $GITHUB_ENV
+          echo "RELEASE=${{ env.RELEASE }}" >> $GITHUB_ENV
     outputs:
       ALPHA: ${{ steps.set-env.outputs.ALPHA }}
       BETA: ${{ steps.set-env.outputs.BETA }}
@@ -45,7 +45,7 @@ jobs:
 
   ALPHA:
     needs: [SELECT_ENVIRONMENT, PROCESS_JSON_FILES]
-    if: needs.SELECT_ENVIRONMENT.outputs.ALPHA == 'true'
+    if: ${{ needs.SELECT_ENVIRONMENT.outputs.ALPHA == 'true' }}
     strategy:
       fail-fast: true
       matrix:
@@ -58,7 +58,7 @@ jobs:
 
   BETA:
     needs: [SELECT_ENVIRONMENT, PROCESS_JSON_FILES]
-    if: needs.SELECT_ENVIRONMENT.outputs.BETA == 'true'
+    if: ${{ needs.SELECT_ENVIRONMENT.outputs.BETA == 'true' }}
     strategy:
       fail-fast: true
       matrix:
@@ -71,7 +71,7 @@ jobs:
 
   RELEASE:
     needs: [SELECT_ENVIRONMENT, PROCESS_JSON_FILES]
-    if: needs.SELECT_ENVIRONMENT.outputs.RELEASE == 'true'
+    if: ${{ needs.SELECT_ENVIRONMENT.outputs.RELEASE == 'true' }}
     strategy:
       fail-fast: true
       matrix:
