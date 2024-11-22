@@ -6,7 +6,7 @@ env:
   ALPHA: True
   BETA: False
   RELEASE: False
-  
+
 permissions:
   contents: write
   id-token: write
@@ -35,8 +35,8 @@ jobs:
         id: set_deployment_files
         shell: bash
         run: | 
-          echo ALPHA_FILES='["accounts/Demo_Account21"]' >> $GITHUB_OUTPUT
-          # echo ALPHA_FILES='["sso-groups/Account_SSO_Cyberdefense_Nonprod", "sso-groups/Account_SSO_Cyberdefense_Prod", "sso-groups/Account_SSO_Lending_Nonprod", "sso-groups/Account_SSO_Lending_Prod"]' >> $GITHUB_OUTPUT
+          #echo ALPHA_FILES='["accounts/Demo_Account22"]' >> $GITHUB_OUTPUT
+          echo ALPHA_FILES='["sso-groups/Account_SSO_Lending_Nonprod"]' >> $GITHUB_OUTPUT
           echo BETA_FILES='[]' >> $GITHUB_OUTPUT
           echo RELEASE_FILES='[]' >> $GITHUB_OUTPUT
 
@@ -52,7 +52,7 @@ jobs:
       fail-fast: true
       matrix:
         json_file: ${{ fromJSON(needs.PROCESS_JSON_FILES.outputs.alpha_deployment_files_output) }}
-    uses: MeroneYilma/CDK-Training/.github/workflows/cdk_deploy.yaml@alpha
+    uses: MeroneYilma/CDK-Training/.github/workflows/cdk_deploy.yaml@main
     with:
       json_file_path: .github/workflows/data
       json_file: ${{ matrix.json_file }}
@@ -65,7 +65,7 @@ jobs:
       fail-fast: true
       matrix:
         json_file: ${{ fromJSON(needs.PROCESS_JSON_FILES.outputs.beta_deployment_files_output) }}
-    uses: MeroneYilma/CDK-Training/.github/workflows/cdk_deploy.yaml@alpha
+    uses: MeroneYilma/CDK-Training/.github/workflows/cdk_deploy.yaml@main
     with:
       json_file_path: .github/workflows/data
       json_file: ${{ matrix.json_file }}
@@ -78,7 +78,7 @@ jobs:
       fail-fast: true
       matrix:
         json_file: ${{ fromJSON(needs.PROCESS_JSON_FILES.outputs.release_deployment_files_output) }}
-    uses: MeroneYilma/CDK-Training/.github/workflows/cdk_deploy.yaml@alpha
+    uses: MeroneYilma/CDK-Training/.github/workflows/cdk_deploy.yaml@main
     with:
       json_file_path: .github/workflows/data
       json_file: ${{ matrix.json_file }}
