@@ -1,5 +1,4 @@
 name: CDK Deploy Workflow
-
 on:   
   workflow_call: 
     inputs:
@@ -15,19 +14,14 @@ on:
         description: 'Specifies the GitHub deployment environment.'
         required: true
         type: string
-      stack_name:
-        description: 'Specifies the CloudFormation stack name.'
-        required: true
-        type: string
         
 jobs:    
   CDK_DEPLOY: 
     runs-on: ubuntu-latest
     environment: ${{ inputs.gh_environment }}
     permissions:
-      id-token: write
-      contents: write
-    timeout-minutes: 90  # Increase the timeout to 60 minutes
+      id-token: write # This is required for requesting the JWT
+      contents: write # This is required for actions/checkout 
 
     steps:
       - name: Git clone the repository
@@ -54,13 +48,5 @@ jobs:
         working-directory: ${{ steps.cdk_directory.outputs.working_directory_output }}
 
       - name: CDK Deploy
-        run: cdk deploy -c filepath=../../../${{ inputs.json_file_path }}/${{ inputs.json_file }}.json --all --require-approval never
+        run: cdk deploy -c filepath=../../../${{ inputs.json_file_path }}/${{ inputs.json_file }}.json --all 
         working-directory: ${{ steps.cdk_directory.outputs.working_directory_output }}
-
-      # - name: Wait for CloudFormation stack to be stable
-      #   run: |
-      #     aws cloudformation wait stack-update-complete --stack-name ${{ inputs.stack_name }}
-      #   continue-on-error: true
-
-    
-     
