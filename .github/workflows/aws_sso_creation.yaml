@@ -85,5 +85,4 @@ jobs:
       json_file_path: .github/workflows/data
       json_file: ${{ matrix.json_file }}
       gh_environment: RELEASE
-      # stack_name: AWSControlTowerAccountFactoryStack-RELEASE
-
+      stack_name: AWSControlTowerAccountFactoryStack-Demo-Account21, AWSControlTowerAccountFactoryStack-Demo-Account22
