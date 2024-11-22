@@ -36,7 +36,7 @@ jobs:
         id: set_deployment_files
         shell: bash
         run: | 
-          echo ALPHA_FILES='["accounts/Demo_Account21", "accounts/Demo_Account21"]' >> $GITHUB_OUTPUT
+          echo ALPHA_FILES='["accounts/Demo_Account22", "accounts/Demo_Account21"]' >> $GITHUB_OUTPUT
           echo BETA_FILES='[]' >> $GITHUB_OUTPUT
           echo RELEASE_FILES='[]' >> $GITHUB_OUTPUT
 
