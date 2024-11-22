@@ -39,6 +39,9 @@ jobs:
         with: 
           json_data_file: "./${{ inputs.json_file_path }}/${{ inputs.json_file }}.json"
 
+      - name: Print Working Directory
+        run: echo "Working Directory: ${{ steps.cdk_directory.outputs.working_directory_output }}"
+
       - name: Install AWS CDK
         run: |
           npm install -g aws-cdk
