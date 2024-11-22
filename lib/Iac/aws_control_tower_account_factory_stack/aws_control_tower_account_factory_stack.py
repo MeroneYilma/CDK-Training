@@ -14,6 +14,7 @@ class AWSControlTowerAccountFactoryStack(Stack):
         self.provisioned_product = servicecatalog.CfnCloudFormationProvisionedProduct(self, "myProvisionedProduct",
             product_name="AWS Control Tower Account Factory",
             provisioning_artifact_name="AWS Control Tower Account Factory",
+            
             provisioning_parameters=[
                 {"key": "AccountEmail", "value": account["AccountEmail"]},
                 {"key": "AccountName", "value": account["AccountName"]},
