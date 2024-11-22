@@ -57,7 +57,7 @@ jobs:
       json_file_path: .github/workflows/data
       json_file: ${{ matrix.json_file }}
       gh_environment: ALPHA
-      stack_name: ${{ format('AWSControlTowerAccountFactoryStack-{0}', matrix.json_file.split('/').pop().replace('_', '-').replace('.json', '')) }}
+      stack_name: ${{ join(['AWSControlTowerAccountFactoryStack-', matrix.json_file.split('/').pop().replace('_', '-').replace('.json', '')], '') }}
 
   BETA:
     needs: [SELECT_ENVIRONMENT, PROCESS_JSON_FILES]
@@ -71,7 +71,7 @@ jobs:
       json_file_path: .github/workflows/data
       json_file: ${{ matrix.json_file }}
       gh_environment: BETA
-      stack_name: ${{ format('AWSControlTowerAccountFactoryStack-{0}', matrix.json_file.split('/').pop().replace('_', '-').replace('.json', '')) }}
+      stack_name: ${{ join(['AWSControlTowerAccountFactoryStack-', matrix.json_file.split('/').pop().replace('_', '-').replace('.json', '')], '') }}
 
   RELEASE:
     needs: [SELECT_ENVIRONMENT, PROCESS_JSON_FILES]
@@ -85,4 +85,4 @@ jobs:
       json_file_path: .github/workflows/data
       json_file: ${{ matrix.json_file }}
       gh_environment: RELEASE
-      stack_name: ${{ format('AWSControlTowerAccountFactoryStack-{0}', matrix.json_file.split('/').pop().replace('_', '-').replace('.json', '')) }}
+      stack_name: ${{ join(['AWSControlTowerAccountFactoryStack-', matrix.json_file.split('/').pop().replace('_', '-').replace('.json', '')], '') }}
