@@ -27,18 +27,18 @@ jobs:
     permissions:
       id-token: write
       contents: write
-    timeout-minutes: 90  # Increase the timeout to 60 minutes
+    timeout-minutes: 60  # Increase the timeout to 60 minutes
 
     steps:
       - name: Git clone the repository
         uses: actions/checkout@v4
 
-      - name: Print inputs for debugging
-        run: |
-          echo "json_file_path: ${{ inputs.json_file_path }}"
-          echo "json_file: ${{ inputs.json_file }}"
-          echo "gh_environment: ${{ inputs.gh_environment }}"
-          echo "stack_name: ${{ inputs.stack_name }}"
+      # - name: Print inputs for debugging
+      #   run: |
+      #     echo "json_file_path: ${{ inputs.json_file_path }}"
+      #     echo "json_file: ${{ inputs.json_file }}"
+      #     echo "gh_environment: ${{ inputs.gh_environment }}"
+      #     echo "stack_name: ${{ inputs.stack_name }}"
 
       - name: Use AWS Configure Custom Action
         id: aws_configure
@@ -52,25 +52,25 @@ jobs:
         with: 
           json_data_file: "./${{ inputs.json_file_path }}/${{ inputs.json_file }}.json"
 
-      - name: Check if working directory exists
-        run: |
-          if [ ! -d "${{ steps.cdk_directory.outputs.working_directory_output }}" ]; then
-            echo "Working directory does not exist: ${{ steps.cdk_directory.outputs.working_directory_output }}"
-            mkdir -p "${{ steps.cdk_directory.outputs.working_directory_output }}"
-            echo "Created missing directory: ${{ steps.cdk_directory.outputs.working_directory_output }}"
-          fi
+      # - name: Check if working directory exists
+      #   run: |
+      #     if [ ! -d "${{ steps.cdk_directory.outputs.working_directory_output }}" ]; then
+      #       echo "Working directory does not exist: ${{ steps.cdk_directory.outputs.working_directory_output }}"
+      #       mkdir -p "${{ steps.cdk_directory.outputs.working_directory_output }}"
+      #       echo "Created missing directory: ${{ steps.cdk_directory.outputs.working_directory_output }}"
+      #     fi
 
       - name: Install AWS CDK
         run: |
           npm install -g aws-cdk
 
       - name: Install Requirements 
-        run: pip install -r requirements.txt
+        run: 'pip install -r requirements.txt'
         working-directory: ${{ steps.cdk_directory.outputs.working_directory_output }}
 
-      - name: List files for debugging
-        run: ls -al ../../../${{ inputs.json_file_path }}/accounts/
-        working-directory: ${{ steps.cdk_directory.outputs.working_directory_output }}
+      # - name: List files for debugging
+      #   run: ls -al ../../../${{ inputs.json_file_path }}/accounts/
+      #   working-directory: ${{ steps.cdk_directory.outputs.working_directory_output }}
 
       - name: CDK Deploy
         run: cdk deploy -c filepath=../../../${{ inputs.json_file_path }}/${{ inputs.json_file }}.json --all --require-approval never
