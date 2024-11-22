@@ -27,7 +27,7 @@ jobs:
     permissions:
       id-token: write
       contents: write
-    timeout-minutes: 60  # Increase the timeout to 60 minutes
+    timeout-minutes: 90  # Increase the timeout to 60 minutes
 
     steps:
       - name: Git clone the repository
