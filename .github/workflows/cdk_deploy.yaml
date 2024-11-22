@@ -63,7 +63,7 @@ jobs:
         run: npm install -g aws-cdk
 
       - name: Install Requirements 
-        run: pip install -r ./${{ steps.cdk_directory.outputs.working_directory_output }}/requirements.txt
+        run: pip install -r lib/iac/aws_control_tower_account_factory_stack/requirements.txt
         working-directory: ${{ steps.cdk_directory.outputs.working_directory_output }}
 
       - name: List files for debugging
