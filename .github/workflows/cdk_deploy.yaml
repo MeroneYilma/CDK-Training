@@ -36,7 +36,7 @@ jobs:
         run: |
           echo "json_file_path: ${{ inputs.json_file_path }}"
           echo "json_file: ${{ inputs.json_file }}"
-          echo "gh_environment: ${{ inputs.gh_environment }}"
+          echo "gh_environment: ${{ inputs.gh_environment }}"`
           echo "stack_name: ${{ inputs.stack_name }}"
 
       - name: Use AWS Configure Custom Action
@@ -78,7 +78,8 @@ jobs:
           aws cloudformation wait stack-update-complete --stack-name ${{ inputs.stack_name }}
         continue-on-error: true
 
-      - name: Describe CloudFormation Stack Events
-        if: failure()
-        run: |
-          aws cloudformation describe-stack-events --stack-name ${{ inputs.stack_name }}
+      # Commented out the Describe CloudFormation Stack Events command
+      # - name: Describe CloudFormation Stack Events
+      #   if: failure()
+      #   run: |
+      #     aws cloudformation describe-stack-events --stack-name ${{ inputs.stack_name }}
