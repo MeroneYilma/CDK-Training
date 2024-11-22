@@ -27,7 +27,7 @@ jobs:
     permissions:
       id-token: write
       contents: write
-    timeout-minutes: 90  # Increase the timeout to 60 minutes
+    timeout-minutes: 60  # Increase the timeout to 60 minutes
 
     steps:
       - name: Git clone the repository
@@ -69,11 +69,11 @@ jobs:
         working-directory: ${{ steps.cdk_directory.outputs.working_directory_output }}
 
       - name: List files for debugging
-        run: ls -al ./${{ inputs.json_file_path }}/accounts/
+        run: ls -al ../../../${{ inputs.json_file_path }}/accounts/
         working-directory: ${{ steps.cdk_directory.outputs.working_directory_output }}
 
       - name: CDK Deploy
-        run: cdk deploy -c filepath=./${{ inputs.json_file_path }}/accounts/${{ inputs.json_file }}.json --all --require-approval never
+        run: cdk deploy -c filepath=../../../${{ inputs.json_file_path }}/${{ inputs.json_file }}.json --all --require-approval never
         working-directory: ${{ steps.cdk_directory.outputs.working_directory_output }}
 
       - name: Wait for CloudFormation stack to be stable
