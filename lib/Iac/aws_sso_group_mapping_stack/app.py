@@ -15,9 +15,12 @@ with open(filepath, 'r') as f:
 # Extract the configuration for the specific environment
 env_config = config["sso_config"]
 
-# Create the stack
+# Extract a unique identifier for the stack name (e.g., AccountName)
+unique_identifier = config["accounts"][0]["AccountName"]  # Adjust this based on your JSON structure
+
+# Create the stack with a unique name
 AwsSSOGroupMappingStack(
-    app, "AwsSSOGroupMappingStack",
+    app, f"AwsSSOGroupMappingStack-{unique_identifier}",  # Use unique identifier in stack name
     context=env_config,
     account_id=config["aws"]["AWS_ACCOUNT_ID"],
     sso_groups_permission_sets=env_config["sso_groups_permission_sets"],
