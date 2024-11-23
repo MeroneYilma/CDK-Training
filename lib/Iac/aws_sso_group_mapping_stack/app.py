@@ -16,7 +16,10 @@ with open(filepath, 'r') as f:
 env_config = config["sso_config"]
 
 # Extract a unique identifier for the stack name (e.g., AccountName)
-unique_identifier = config["accounts"][0]["AccountName"]  # Adjust this based on your JSON structure
+if "accounts" in config and len(config["accounts"]) > 0 and "AccountName" in config["accounts"][0]:
+    unique_identifier = config["accounts"][0]["AccountName"]
+else:
+    raise KeyError("AccountName not found in the accounts array in the JSON configuration.")
 
 # Create the stack with a unique name
 AwsSSOGroupMappingStack(
