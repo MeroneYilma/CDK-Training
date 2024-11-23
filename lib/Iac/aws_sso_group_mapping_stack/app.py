@@ -24,7 +24,7 @@ else:
 # Create the stack with a unique name
 AwsSSOGroupMappingStack(
     app, f"AwsSSOGroupMappingStack-{unique_identifier}",  # Use unique identifier in stack name
-    context=env_config,
+    context=config,  # Pass the entire config as context
     account_id=config["aws"]["AWS_ACCOUNT_ID"],
     sso_groups_permission_sets=env_config["sso_groups_permission_sets"],
     sso_groups_ids=env_config["sso_groups_ids"],

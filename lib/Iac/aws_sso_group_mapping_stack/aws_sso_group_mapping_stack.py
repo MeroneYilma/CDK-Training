@@ -47,6 +47,12 @@ class AwsSSOGroupMappingStack(Stack):
         # Initialize Boto3 client for SSO
         sso_client = boto3.client('sso-admin')
 
+        # Extract the target account ID from the context
+        if "accounts" in context and len(context["accounts"]) > 0 and "AccountId" in context["accounts"][0]:
+            target_account_id = context["accounts"][0]["AccountId"]
+        else:
+            raise KeyError("AccountId not found in the accounts array in the JSON configuration.")
+
         for group_name, permission_set_arn in sso_groups_permission_sets.items():
             group_id = sso_groups_ids.get(group_name)
             if group_id not in validated_group_ids:
@@ -57,13 +63,13 @@ class AwsSSOGroupMappingStack(Stack):
                     raise ValueError(f"Invalid SSO group ID: {group_id}")
                 validated_group_ids.add(group_id)
             
-            # Check if the assignment already exists for the specific account
-            if not self._sso_assignment_exists(sso_client, sso_instance_arn, account_id, permission_set_arn, group_id):
+            # Check if the assignment already exists for the specific target account
+            if not self._sso_assignment_exists(sso_client, sso_instance_arn, target_account_id, permission_set_arn, group_id):
                 try:
                     sso.CfnAssignment(
-                        self, f"{group_name}-{account_id}",
+                        self, f"{group_name}-{target_account_id}",
                         instance_arn=sso_instance_arn,
-                        target_id=account_id,
+                        target_id=target_account_id,
                         target_type="AWS_ACCOUNT",
                         principal_id=group_id,
                         principal_type="GROUP",
@@ -72,7 +78,7 @@ class AwsSSOGroupMappingStack(Stack):
                 except Exception as e:
                     print(f"Error creating assignment for group {group_name}: {e}")
             else:
-                print(f"Assignment for group {group_name} already exists for account {account_id}, skipping creation.")
+                print(f"Assignment for group {group_name} already exists for account {target_account_id}, skipping creation.")
 
     def _is_valid_group_id(self, group_id: str) -> bool:
         # Adjusted pattern to match the provided group IDs
