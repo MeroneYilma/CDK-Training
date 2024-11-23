@@ -9,7 +9,8 @@
     },
     "accounts": [
         {
-            "AccountId": "396608769628"
+            "AccountId": "396608769628",
+            "AccountName": "Account-SSODemoAccount24"
         }
     ],
     "sso_config": {
