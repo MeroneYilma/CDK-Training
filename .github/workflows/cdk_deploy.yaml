@@ -29,18 +29,15 @@ jobs:
 
       - name: Use AWS Configure Custom Action
         id: aws_configure
-        uses: MeroneYilma/CDK-Training/.github/actions/global/aws_github_auth@alpha
+        uses: MeroneYilma/CDK-Training/.github/actions/global/aws_github_auth@main
         with: 
           json_data_file: "./${{ inputs.json_file_path }}/${{ inputs.json_file }}.json"
 
       - name: Use AWS CDK Working Directory Custom Action
         id: cdk_directory
-        uses: MeroneYilma/CDK-Training/.github/actions/global/cdk_directory@alpha
+        uses: MeroneYilma/CDK-Training/.github/actions/global/cdk_directory@main
         with: 
           json_data_file: "./${{ inputs.json_file_path }}/${{ inputs.json_file }}.json"
-
-      - name: Print Working Directory
-        run: echo "Working Directory: ${{ steps.cdk_directory.outputs.working_directory_output }}"
 
       - name: Install AWS CDK
         run: |
@@ -51,5 +48,5 @@ jobs:
         working-directory: ${{ steps.cdk_directory.outputs.working_directory_output }}
 
       - name: CDK Deploy
-        run: cdk deploy -c filepath=../../../${{ inputs.json_file_path }}/${{ inputs.json_file }}.json --all 
+        run: cdk deploy -c filepath=../../../${{ inputs.json_file_path }}/${{ inputs.json_file }}.json --all --require-approval never
         working-directory: ${{ steps.cdk_directory.outputs.working_directory_output }}
