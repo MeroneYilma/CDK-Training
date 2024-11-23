@@ -1,4 +1,4 @@
-name: AWS Account Creation and SSO Mapping CDK Deploy Trigger Workflow
+name: 05 - AWS Account Creation and SSO Mapping CDK Deploy Trigger Workflow
 on:
   workflow_dispatch:
 
