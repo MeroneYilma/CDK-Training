@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: ${{ inputs.gh_environment }}
     permissions:
-      id-token: write # This is required for requesting the JWT
+      id-token: write # This is required for requesting the JWT all update
       contents: write # This is required for actions/checkout 
 
     steps:
