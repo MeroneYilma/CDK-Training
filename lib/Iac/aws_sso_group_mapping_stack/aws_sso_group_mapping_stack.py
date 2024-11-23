@@ -1,4 +1,5 @@
 import re
+import boto3
 from aws_cdk import (
     Stack,
     aws_sso as sso,
@@ -43,6 +44,9 @@ class AwsSSOGroupMappingStack(Stack):
 
         validated_group_ids = set()
 
+        # Initialize Boto3 client for SSO
+        sso_client = boto3.client('sso-admin')
+
         for group_name, permission_set_arn in sso_groups_permission_sets.items():
             group_id = sso_groups_ids.get(group_name)
             if group_id not in validated_group_ids:
@@ -53,20 +57,38 @@ class AwsSSOGroupMappingStack(Stack):
                     raise ValueError(f"Invalid SSO group ID: {group_id}")
                 validated_group_ids.add(group_id)
             
-            try:
-                sso.CfnAssignment(
-                    self, f"{group_name}-{account_id}",
-                    instance_arn=sso_instance_arn,
-                    target_id=account_id,
-                    target_type="AWS_ACCOUNT",
-                    principal_id=group_id,
-                    principal_type="GROUP",
-                    permission_set_arn=permission_set_arn
-                )
-            except Exception as e:
-                print(f"Error creating assignment for group {group_name}: {e}")
+            # Check if the assignment already exists
+            if not self._sso_assignment_exists(sso_client, sso_instance_arn, account_id, permission_set_arn, group_id):
+                try:
+                    sso.CfnAssignment(
+                        self, f"{group_name}-{account_id}",
+                        instance_arn=sso_instance_arn,
+                        target_id=account_id,
+                        target_type="AWS_ACCOUNT",
+                        principal_id=group_id,
+                        principal_type="GROUP",
+                        permission_set_arn=permission_set_arn
+                    )
+                except Exception as e:
+                    print(f"Error creating assignment for group {group_name}: {e}")
+            else:
+                print(f"Assignment for group {group_name} already exists, skipping creation.")
 
     def _is_valid_group_id(self, group_id: str) -> bool:
         # Adjusted pattern to match the provided group IDs
         pattern = re.compile(r'^[a-f0-9-]+$')
         return bool(pattern.match(group_id))
+
+    def _sso_assignment_exists(self, sso_client, instance_arn, account_id, permission_set_arn, group_id):
+        try:
+            response = sso_client.list_account_assignments(
+                InstanceArn=instance_arn,
+                AccountId=account_id,
+                PermissionSetArn=permission_set_arn
+            )
+            for assignment in response['AccountAssignments']:
+                if assignment['PrincipalId'] == group_id:
+                    return True
+        except Exception as e:
+            print(f"Error checking assignment existence for group {group_id}: {e}")
+        return False
