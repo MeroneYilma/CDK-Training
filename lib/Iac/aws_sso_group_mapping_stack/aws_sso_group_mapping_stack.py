@@ -57,7 +57,7 @@ class AwsSSOGroupMappingStack(Stack):
                     raise ValueError(f"Invalid SSO group ID: {group_id}")
                 validated_group_ids.add(group_id)
             
-            # Check if the assignment already exists
+            # Check if the assignment already exists for the specific account
             if not self._sso_assignment_exists(sso_client, sso_instance_arn, account_id, permission_set_arn, group_id):
                 try:
                     sso.CfnAssignment(
@@ -72,7 +72,7 @@ class AwsSSOGroupMappingStack(Stack):
                 except Exception as e:
                     print(f"Error creating assignment for group {group_name}: {e}")
             else:
-                print(f"Assignment for group {group_name} already exists, skipping creation.")
+                print(f"Assignment for group {group_name} already exists for account {account_id}, skipping creation.")
 
     def _is_valid_group_id(self, group_id: str) -> bool:
         # Adjusted pattern to match the provided group IDs
@@ -90,5 +90,5 @@ class AwsSSOGroupMappingStack(Stack):
                 if assignment['PrincipalId'] == group_id:
                     return True
         except Exception as e:
-            print(f"Error checking assignment existence for group {group_id}: {e}")
+            print(f"Error checking assignment existence for group {group_id} in account {account_id}: {e}")
         return False
