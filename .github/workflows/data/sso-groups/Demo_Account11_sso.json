@@ -16,11 +16,15 @@
     "sso_config": {
     "sso_groups_permission_sets": {
         "AWS.All.Admin": "arn:aws:sso:::permissionSet/ssoins-72236c35d3a35c4d/ps-7b30f39e82e55ea1",
-        "AWS.All.ReadOnly": "arn:aws:sso:::permissionSet/ssoins-72236c35d3a35c4d/ps-c77b444b0c50e97e"
+        "AWS.All.ReadOnly": "arn:aws:sso:::permissionSet/ssoins-72236c35d3a35c4d/ps-c77b444b0c50e97e",
+        "AWS.TCB.MANDIANTUSER": "arn:aws:sso:::permissionSet/ssoins-72236c35d3a35c4d/ps-226960d39269b634",
+        "IT Network Delivery - Local": "arn:aws:sso:::permissionSet/ssoins-72236c35d3a35c4d/ps-9eff83cf28464429"
     },
     "sso_groups_ids": {
         "AWS.All.Admin": "b438d458-90b1-705a-4430-c6915956332e",
-        "AWS.All.ReadOnly": "44c8b438-70f1-707e-8823-c269490e9748"
+        "AWS.All.ReadOnly": "44c8b438-70f1-707e-8823-c269490e9748",
+        "AWS.TCB.MANDIANTUSER": "e498f4f8-8021-70f1-ee78-8caef38ff17a",
+        "IT Network Delivery - Local": "a4389428-f011-702c-e746-d1c33eeec438"
     },
     "sso_instance_arn": "arn:aws:sso:::instance/ssoins-72236c35d3a35c4d"
     }
